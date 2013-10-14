@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import labs.dracula.Dracula;
-import labs.dracula.DraculaMove;
+import dracula.Dracula;
+import dracula.DraculaMove;
 
 public class DraculaRunner {
 
