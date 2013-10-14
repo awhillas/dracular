@@ -7,7 +7,7 @@
 
 package dracula;
 
-import labs.dracula.Dracula;
+import dracula.Dracula;
 
 public class PlayerFactory {
 
