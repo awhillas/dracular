@@ -7,7 +7,7 @@
 
 package dracula;
 
-import labs.dracula.DraculaMove;
+import dracula.DraculaMove;
 
 public interface Dracula {
 
