@@ -19,10 +19,10 @@ public interface Map {
 	/**
 	 * Gets a list of locations that can be travelled to from the current location.
 	 */
-	List<String> getAdjacentLocations(String current, EnumSet<TravelBy> by);
+	List<String> getAdjacentFor(String location, EnumSet<TravelBy> by);
 	
 	/**
 	 * Returns true if the location is at sea
 	 */
-	boolean isLocationAtSea(String loc);
+	boolean isAtSea(String location);
 }

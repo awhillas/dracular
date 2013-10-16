@@ -136,22 +136,22 @@ public class GameMap implements Map {
 	}
 
 	@Override
-	public List<String> getAdjacentLocations(String current, EnumSet<TravelBy> by) {
+	public List<String> getAdjacentFor(String location, EnumSet<TravelBy> by) {
 		List<String> locs = new ArrayList<String>();
 		if (by.contains(TravelBy.road)) {
-			locs.addAll(Arrays.asList(this.roads.adjacentVertices(current)));
+			locs.addAll(Arrays.asList(this.roads.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.rail)) {
-			locs.addAll(Arrays.asList(this.rails.adjacentVertices(current)));
+			locs.addAll(Arrays.asList(this.rails.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.sea)) {
-			locs.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(current)));
+			locs.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location)));
 		}
 		return locs;
 	}
 
 	@Override
-	public boolean isLocationAtSea(String loc) {
+	public boolean isAtSea(String loc) {
 		return this.seaLocations.contains(loc);
 	}
 }
