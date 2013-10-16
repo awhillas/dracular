@@ -8,6 +8,8 @@ public interface Graph {
 	
 	public int numEdges();
 	
+	public int getMinDist(String node1, String node2);
+	
 	/**
 	 * @param 	v	Vertex
 	 * @return	The degree of the vertex v

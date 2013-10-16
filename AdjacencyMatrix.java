@@ -143,7 +143,7 @@ public class AdjacencyMatrix implements Graph {
         assert graph.areAdjacent("A", "D");
         assert graph.areAdjacent("C", "B");
         assert graph.areAdjacent("D", "E");
-        assert graph.areAdjacent("D", "E");
+        assert graph.areAdjacent("D", "F");
 
         assert graph.degree("A") == 3;
         assert graph.degree("B") == 3;
