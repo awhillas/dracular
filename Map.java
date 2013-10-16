@@ -7,7 +7,7 @@ public interface Map {
 	 * Initialise map with files containing location names and their 2-letter codes.
 	 * Each line in the file must be in the format of e.g. "|| AL || Alicante ||"
 	 */
-	void init(String landLocationsFile, String seaLocationsFile);
+	void init(String inlandLocations, String portLocations, String seaLocations);
 	
 	/**
 	 * Load maps from road, rail and sea map files.
@@ -20,4 +20,9 @@ public interface Map {
 	 * Gets a list of locations that can be travelled to from the current location.
 	 */
 	List<String> getAdjacentLocations(String current, EnumSet<TravelBy> by);
+	
+	/**
+	 * Returns true if the location is at sea
+	 */
+	boolean isLocationAtSea(String loc);
 }

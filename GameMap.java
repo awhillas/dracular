@@ -11,7 +11,8 @@ import java.util.*;
  */
 public class GameMap implements Map {
 
-	private List<String> landLocations = new ArrayList<String>();
+	private List<String> inlandLocations = new ArrayList<String>();
+	private List<String> portLocations = new ArrayList<String>();
 	private List<String> seaLocations = new ArrayList<String>();
 	
 	private AdjacencyMatrix roads;
@@ -20,37 +21,19 @@ public class GameMap implements Map {
 	
 	// Mixed land and sea, for quick lookup
 	private HashMap<String, String> locationToCodes = new HashMap<String, String>();
-	private HashMap<String, String> codeToLocations = new HashMap<String, String>();
-	
-	public void init(String landLocationsFile, String seaLocationsFile) {
+		
+	public void init(String inlandLocations, String portLocations, String seaLocationsFile) {
 		try {
-			loadLocationCodes(landLocationsFile, true);
-			loadLocationCodes(seaLocationsFile, false);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void loadMaps(String roadMap, String railMap, String seaMap) {
-		try {
-			// Land.
-			String[] nodes = new String[landLocations.size()];
-			landLocations.toArray(nodes);
-			this.roads = new AdjacencyMatrix(nodes, loadMap(roadMap, true));
-			this.rails = new AdjacencyMatrix(nodes, loadMap(railMap, true));
-			
-			// Sea.
-			nodes = new String[seaLocations.size()];
-			seaLocations.toArray(nodes);
-			this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(seaMap, false));
+			loadLocationCodes(inlandLocations, this.inlandLocations);
+			loadLocationCodes(portLocations, this.portLocations);
+			loadLocationCodes(seaLocationsFile, this.seaLocations);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void loadLocationCodes(String locationCodeFile, boolean isLand) throws Exception {
+	private void loadLocationCodes(String locationCodeFile, List<String> codeList) throws Exception {
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(locationCodeFile));
@@ -65,19 +48,12 @@ public class GameMap implements Map {
 				String code = parts[1].trim();
 				String location = parts[2].trim();
 				
-				/* A location can belong to both land and sea
-				if (this.locationToCodes.containsKey(location) || this.codeToLocations.containsKey(code))
+				if (this.locationToCodes.containsKey(location))
 					throw new Exception(String.format("Duplicate location or code \"%s, %s\" found in location code file! (%s)", location, code, locationCodeFile));
-				*/
-				if (isLand) {
-					landLocations.add(code);
-				}
-				else {
-					seaLocations.add(code);
-				}
+
+				codeList.add(code);
 				
 				// Cache.
-				codeToLocations.put(code, location);
 				locationToCodes.put(location, code);
 			}
 		} catch (Exception e) {
@@ -87,11 +63,43 @@ public class GameMap implements Map {
 				br.close();
 		}
 	}
+
+	public void loadMaps(String roadMap, String railMap, String seaMap) {
+		try {
+			// Land.
+			String[] nodes = new String[inlandLocations.size() + portLocations.size()];
+			List<String> combinedLocations = new ArrayList<String>();
+			combinedLocations.addAll(inlandLocations);
+			combinedLocations.addAll(portLocations);
+			combinedLocations.toArray(nodes);
+			
+			this.roads = new AdjacencyMatrix(nodes, loadMap(roadMap, combinedLocations));
+			this.rails = new AdjacencyMatrix(nodes, loadMap(railMap, combinedLocations));
+			
+			// Sea.
+			nodes = new String[seaLocations.size() + portLocations.size()];
+			combinedLocations = new ArrayList<String>();
+			combinedLocations.addAll(portLocations);
+			combinedLocations.addAll(seaLocations);
+			combinedLocations.toArray(nodes);
+			
+			this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(seaMap, combinedLocations));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
-	private int[][] loadMap(String mapFile, boolean isLand) throws Exception {
-		int[][] matrix = isLand 
-				? new int[landLocations.size()][landLocations.size()]
-				: new int[seaLocations.size()][seaLocations.size()];
+	/**
+	 * 
+	 * @param 	mapFile:			a file containing routes between 2 locations			
+	 * @param 	combinedLocations	combined inland and port locations, or combined port and sea locations
+	 * @return						a matrix for the adjacency matrix
+	 * @throws 	Exception
+	 */
+	private int[][] loadMap(String mapFile, List<String> combinedLocations) throws Exception {
+		int size = combinedLocations.size();
+		int[][] matrix = new int[size][size];
 
 		BufferedReader br = null;		
 		try {
@@ -112,9 +120,8 @@ public class GameMap implements Map {
 					throw new Exception(String.format("Invalid location \"%s\" in map file! (%s)", loc2, mapFile));
 				
 				// Get index of location code.
-				List<String> locations = isLand? landLocations : seaLocations;
-				int idx1 = locations.indexOf(locationToCodes.get(loc1));
-				int idx2 = locations.indexOf(locationToCodes.get(loc2));
+				int idx1 = combinedLocations.indexOf(locationToCodes.get(loc1));
+				int idx2 = combinedLocations.indexOf(locationToCodes.get(loc2));
 
 				// Update matrix.
 				matrix[idx1][idx2] = matrix[idx2][idx1] = 1;
@@ -132,20 +139,19 @@ public class GameMap implements Map {
 	public List<String> getAdjacentLocations(String current, EnumSet<TravelBy> by) {
 		List<String> locs = new ArrayList<String>();
 		if (by.contains(TravelBy.road)) {
-			for (String s : roads.adjacentVertices(current)) {
-				locs.add(s);
-			}
+			locs.addAll(Arrays.asList(this.roads.adjacentVertices(current)));
 		}
 		if (by.contains(TravelBy.rail)) {
-			for (String s : rails.adjacentVertices(current)) {
-				locs.add(s);
-			}
+			locs.addAll(Arrays.asList(this.rails.adjacentVertices(current)));
 		}
 		if (by.contains(TravelBy.sea)) {
-			for (String s : seaRoutes.adjacentVertices(current)) {
-				locs.add(s);
-			}
+			locs.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(current)));
 		}
 		return locs;
+	}
+
+	@Override
+	public boolean isLocationAtSea(String loc) {
+		return this.seaLocations.contains(loc);
 	}
 }
