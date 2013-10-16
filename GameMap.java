@@ -65,9 +65,10 @@ public class GameMap implements Map {
 				String code = parts[1].trim();
 				String location = parts[2].trim();
 				
+				/* A location can belong to both land and sea
 				if (this.locationToCodes.containsKey(location) || this.codeToLocations.containsKey(code))
 					throw new Exception(String.format("Duplicate location or code \"%s, %s\" found in location code file! (%s)", location, code, locationCodeFile));
-				
+				*/
 				if (isLand) {
 					landLocations.add(code);
 				}
