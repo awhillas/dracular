@@ -154,4 +154,24 @@ public class GameMap implements Map {
 	public boolean isAtSea(String loc) {
 		return this.seaLocations.contains(loc);
 	}
+	
+	/*
+         * uses pathFinder to get the route between two cities (assuming they can be reached from one another)
+         */
+        @Override
+        public ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by) {
+            switch (by) {
+                case road:
+                    return PathFinder.getPath(start, finish, avoid, roads);
+
+                case rail:
+                    return PathFinder.getPath(start, finish, avoid, rails);
+
+                case sea:
+                    return PathFinder.getPath(start, finish, avoid, seaRoutes);
+
+                default:
+                    return new ArrayList<String>();
+            }
+        }
 }
