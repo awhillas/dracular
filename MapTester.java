@@ -39,5 +39,35 @@ public class MapTester {
 		
 		assert !m.isAtSea("VE");
 		assert m.isAtSea("NS");
+		
+		ArrayList<String> avoid = new ArrayList<String>();
+                ArrayList<String> path = m.getRoute("LS", "AL", avoid, TravelBy.road);
+                assert path.size() == 3;
+                assert path.get(0).equals("LS");
+                assert path.get(1).equals("MA");
+                assert path.get(2).equals("AL");
+                
+                avoid.add("SN");
+                avoid.add("MA");
+                path = m.getRoute("LS", "AL", avoid, TravelBy.road);
+                assert path.size() == 4;
+                assert path.get(0).equals("LS");
+                assert path.get(1).equals("CA");
+                assert path.get(2).equals("GR");
+                assert path.get(3).equals("AL");
+                
+                path = m.getRoute("LS", "CN", avoid, TravelBy.road);
+                System.out.print("Path from LS to CN: ");
+                for (int i = 0; i < path.size(); i++){
+                    System.out.print(path.get(i)+ ", ");
+                }
+                System.out.println();
+                
+                path = m.getRoute("AT", "LE", avoid, TravelBy.road);
+                System.out.print("Path from AT to LE: ");
+                for (int i = 0; i < path.size(); i++){
+                    System.out.print(path.get(i)+ ", ");
+                }
+                System.out.println();
 	}
 }
