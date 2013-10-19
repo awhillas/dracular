@@ -12,13 +12,14 @@ import dracula.Dracula;
 public class PlayerFactory {
 
    public static Dracula getDracula(String pastPlays, String[] messages) {
-      return null;
+      return new GamePlayer(pastPlays, messages);
    }
+   
    public static void main (String[] args) {
 	   
 	   // testing
 	   
-	   String pastPlays = "";
+	   String pastPlays = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE....";
 	   String[] messages = {};
 	   
 	   Dracula d = PlayerFactory.getDracula( pastPlays, messages );
