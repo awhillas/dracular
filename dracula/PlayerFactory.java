@@ -12,7 +12,7 @@ import dracula.Dracula;
 public class PlayerFactory {
 
    public static Dracula getDracula(String pastPlays, String[] messages) {
-      return new GamePlayer(pastPlays, messages);
+      return new Game(pastPlays, messages);
    }
    
    public static void main (String[] args) {

@@ -1,5 +1,6 @@
 package dracula;
 
+
 /**
  * Main class that interfaces to our implementation of the Dracular AI
  */
@@ -8,13 +9,17 @@ package dracula;
  * Bad name but all the good ones were taken :(
  * @author alex
  */
-public class GamePlayer implements Dracula {
+public class Game implements Dracula {
 
 	/**
 	 * COnstruct the state of play so we can choose a next action
 	 */
-	public GamePlayer(String pastPlays, String[] messages) {
-		// TODO Auto-generated constructor stub
+	public Game(String pastPlays, String[] messages) {
+		// Parse the past plays and build a model of the state of the world
+		GameData world = new GameData();
+		world.doString(pastPlays);
+		
+		
 	}
 
 	/* (non-Javadoc)

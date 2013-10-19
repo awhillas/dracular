@@ -1,3 +1,4 @@
+package dracula;
 
 public class TestGame {
 	/*
