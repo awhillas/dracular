@@ -17,7 +17,7 @@ public interface Player {
 	 * status of player. This is effected by Dracula/Hunter encounters, traps
 	 * and Hospital/Castle
 	 */
-	//public void setHealth();
+	public void setHealth(int amount);
 	
 	/*
 	 * Update the location of the player
@@ -42,4 +42,5 @@ public interface Player {
 	public Player copyFromLast(DraculaPlayer activeDracula);
 	
 	public Player copyFromLast(HunterPlayer activeHunter);
+
 }
