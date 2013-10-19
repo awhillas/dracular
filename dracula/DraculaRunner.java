@@ -28,7 +28,6 @@ public class DraculaRunner {
    public static void main (String[] args) {
 
       Exception failed = null;
-
       //disable stdout
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //      System.setOut(new PrintStream(baos));
