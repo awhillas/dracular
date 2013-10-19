@@ -37,4 +37,8 @@ public interface Player {
 	 */
 	public void setEvents();
 	
+
+	public Player copyFromLast(DraculaPlayer activeDracula);
+	
+	public Player copyFromLast(HunterPlayer activeHunter);
 }
