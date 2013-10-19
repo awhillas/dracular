@@ -6,10 +6,12 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 
 public class GameData {
 	ArrayList<MoveData> MovesData = new ArrayList<MoveData>();
 	MoveData[] DraculaTrail = new MoveData[6];
+	//Queue<MoveData> DraculaTrail;
 	HashMap<String, HunterPlayer> HuntersData = new HashMap<String, HunterPlayer>();
 	HashMap<String, LocationData> MapData = new HashMap<String, LocationData>();
 	DraculaPlayer dracula;
@@ -26,6 +28,7 @@ public class GameData {
 		turn = 0;
 		round = 0;
 		score = 300;
+		vampire = false;
 		
 		//Get the default map data from the graph inputs
 		//BuildMap(MapData);
@@ -40,7 +43,6 @@ public class GameData {
 
 	
 	public void doString(String pastPlays) {
-		
 		playerMoves = pastPlays.split(" ");
 		
 		//String lastPlay = playerMoves[playerMoves.length-1];
@@ -54,11 +56,13 @@ public class GameData {
 			move = new MoveData(playerMoves[i]);
 			if (player.contains("D")) {
 				dracula.updateFromMove(this);
-				move.player = dracula;
-				DraculaTrail[round % 6] = move; 
+				DraculaPlayer newDracula = new DraculaPlayer();
+				move.player = newDracula.copyFromLast(dracula);
+				DraculaTrail[round % 6] = move;
 			} else {
 				HuntersData.get(player).updateFromMove(this);
-				move.player = HuntersData.get(player); 
+				HunterPlayer newHunter = new HunterPlayer(HuntersData.get(player).name);
+				move.player = newHunter.copyFromLast(HuntersData.get(player)); 
 			}
 			MovesData.add(move);
 		}
