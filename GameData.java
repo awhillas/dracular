@@ -18,7 +18,7 @@ public class GameData {
 	String[] playerMoves;
 	
 	MoveData move;
-	boolean vampire;
+	String vampire;
 	int turn;
 	int round;
 	int score;
@@ -28,10 +28,9 @@ public class GameData {
 		turn = 0;
 		round = 0;
 		score = 300;
-		vampire = false;
+		vampire = "";
 		
 		//Get the default map data from the graph inputs
-		//BuildMap(MapData);
 		
 		HuntersData.put("G", new HunterPlayer("Lord Godalming"));
 		HuntersData.put("S", new HunterPlayer("Dr Seward"));
