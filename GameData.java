@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Queue;
 
 public class GameData {
-	ArrayList<MoveData> MovesData = new ArrayList<MoveData>();
+	ArrayList<MoveData> MovesData = new ArrayList<MoveData>(); 
 	MoveData[] DraculaTrail = new MoveData[6];
 	//Queue<MoveData> DraculaTrail;
 	HashMap<String, HunterPlayer> HuntersData = new HashMap<String, HunterPlayer>();
@@ -47,7 +47,7 @@ public class GameData {
 		
 		//String lastPlay = playerMoves[playerMoves.length-1];
 		for (int i = 0; i < playerMoves.length; ++i) {
-			if (turn == 6) {
+			if (turn == 5) {
 				turn = 0;
 				round++;
 			}
