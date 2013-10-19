@@ -4,12 +4,13 @@
  *
  */
 
-
 public class HunterPlayer implements Player {
 	GameData GameData;
 	String name;
 	String location;
-
+	String encounters;
+	boolean draculaEncounter;
+	int traps;
 	int health;
 	int status;
 	
@@ -22,31 +23,57 @@ public class HunterPlayer implements Player {
 	@Override
 	public void updateFromMove(GameData data) {
 		this.GameData = data; 
+		this.encounters = GameData.move.events;
+		this.location = GameData.move.location;
+		this.traps = 0;
+		this.draculaEncounter = false;
 		setEvents();
-		setLocation();
+	}
+	
+	public Player copyFromLast(HunterPlayer activeHunter) {
+		this.draculaEncounter = activeHunter.draculaEncounter;
+		this.location = activeHunter.location;
+		this.encounters = activeHunter.encounters;
+		this.traps = activeHunter.traps;
+		this.health = activeHunter.health;
+		this.status = activeHunter.status;
+		return this;
 	}
 	
 	@Override
 	public void setEvents() {
-		if (GameData.move.events.substring(0).contains("D")) {
+		//Dracula is encountered
+		if (encounters.substring(0).contains("D")) {
+			this.draculaEncounter = true;
 			this.health -= 4;
 			GameData.dracula.health -= 10;
 		}
-		if (GameData.move.events.substring(0).contains("V")) {
+		//Vampire is discovered
+		if (encounters.substring(0).contains("V")) {
 			GameData.vampire = false;
-			GameData.MapData.get(this.location).vampire = false;
+			//GameData.MapData.get(this.location).vampire = false;
 		}
-		if (GameData.move.events.substring(0).contains("TT")) { //??
-			GameData.MapData.get(this.location).removeTrap();
-			GameData.MapData.get(this.location).removeTrap();
-		} else if (GameData.move.events.substring(0).contains("T")) {
-			GameData.MapData.get(this.location).removeTrap();
+		//Traps are in sequence or a single trap
+		if (encounters.substring(0).contains("TT")) { 
+			this.traps = 2;
+			//Spec says traps are disarmed? Health points?
+			//GameData.MapData.get(this.location).removeTrap();
+			//GameData.MapData.get(this.location).removeTrap();
+		} else if (encounters.substring(0).contains("T")) {
+			this.traps = 1;
+			//GameData.MapData.get(this.location).removeTrap();
 		}
 	}
 
 	@Override
 	public void setLocation() {
-		this.location = GameData.move.location;
+		
+	}
+
+	@Override
+	public Player copyFromLast(DraculaPlayer activeDracula) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
