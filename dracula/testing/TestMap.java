@@ -1,10 +1,13 @@
-package dracula;
+package dracula.testing;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import dracula.GameMap;
+import dracula.TravelBy;
 
-public class MapTester {
+
+public class TestMap {
 
 	public static void main(String[] args) {
 		GameMap m = new GameMap();
