@@ -49,7 +49,7 @@ public class TestMap {
 		
 		// Modify map, change "BE" for Belgrade to "BL", rest is the same
 		String inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
-		String road = TestMap.class.getClass().getResource("/maps/road.txt").getPath();
+		String road = TestMap.class.getResource("/maps/road.txt").getPath();
 		m = createMap(inlandCities, road);
 		h = m.hashCode(); 
 		assert h == 500910866;
@@ -57,7 +57,7 @@ public class TestMap {
 		// Continue modifying map, change road between Alicante -- Madrid to Madrid -- Alicante 
 		// Hash should be the same.
 		inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
-		road = TestMap.class.getClass().getResource("/maps/tests/road.txt").getPath();
+		road = TestMap.class.getResource("/maps/tests/road.txt").getPath();
 		m = createMap(inlandCities, road);
 		h = m.hashCode();
 		assert h == 500910866;
