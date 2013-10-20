@@ -177,9 +177,15 @@ public class GameMap implements Map {
         }
     }
     
+    @Override
+    public int hashCode() {
+    	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
+    	return Math.abs(hash);
+    }
+    
     public static GameMap getDracularsMap() {
 		GameMap m = new GameMap();
-		
+
 		// Init.
 		URL inlandCities = m.getClass().getResource("/maps/inlandCities.txt");
 		URL portCities = m.getClass().getResource("/maps/portCities.txt");

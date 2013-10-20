@@ -1,28 +1,23 @@
 package dracula.testing;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.*;
 
-import dracula.GameMap;
-import dracula.TravelBy;
+import dracula.*;
+import dracula.Map;
 
 
 public class TestMap {
 
 	public static void main(String[] args) {
-		GameMap m = new GameMap();
 		
-		// Init.
-		URL inlandCities = m.getClass().getResource("/maps/inlandCities.txt");
-		URL portCities = m.getClass().getResource("/maps/portCities.txt");
-		URL seas = m.getClass().getResource("/maps/seas.txt");
-		m.init(inlandCities.getPath(), portCities.getPath(), seas.getPath());
-		
-		// Load Maps.
-		URL road = m.getClass().getResource("/maps/road.txt");
-		URL rail = m.getClass().getResource("/maps/rail.txt");
-		URL sea = m.getClass().getResource("/maps/sea.txt");
-		m.loadMaps(road.getPath(), rail.getPath(), sea.getPath());
+		/*
+		 * Map basic tests
+		 * 
+		 */
+		Map m = createMap();
 		
 		// Madrid
 		assert m.getAdjacentFor("MA", EnumSet.allOf(TravelBy.class)).size() == 10;
@@ -45,6 +40,37 @@ public class TestMap {
 		assert !m.isAtSea("VE");
 		assert m.isAtSea("NS");
 		
+		/*
+		 * Map Hash tests
+		 * 
+		 */
+		int h = m.hashCode();
+		assert h == 1234107428;
+		
+		// Modify map, change "BE" for Belgrade to "BL", rest is the same
+		String inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
+		String road = TestMap.class.getClass().getResource("/maps/road.txt").getPath();
+		m = createMap(inlandCities, road);
+		h = m.hashCode(); 
+		assert h == 500910866;
+		
+		// Continue modifying map, change road between Alicante -- Madrid to Madrid -- Alicante 
+		// Hash should be the same.
+		inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
+		road = TestMap.class.getClass().getResource("/maps/tests/road.txt").getPath();
+		m = createMap(inlandCities, road);
+		h = m.hashCode();
+		assert h == 500910866;
+		
+		// Restore map.
+		m = createMap();
+		h = m.hashCode();
+		assert h == 1234107428;
+		
+		/*
+		 * Path tests
+		 * 
+		 */		
 		ArrayList<String> avoid = new ArrayList<String>();
         ArrayList<String> path = m.getRoute("LS", "AL", avoid, TravelBy.road);
         assert path.size() == 3;
@@ -74,5 +100,29 @@ public class TestMap {
             System.out.print(path.get(i)+ ", ");
         }
         System.out.println();
+	}
+	
+	private static Map createMap()
+	{
+		// Default.
+		String inlandCities = TestMap.class.getResource("/maps/inlandCities.txt").getPath();
+		String road = TestMap.class.getClass().getResource("/maps/road.txt").getPath();
+		return createMap(inlandCities, road);
+	}
+	
+	private static Map createMap(String inlandCities, String road) {
+		Map m = new GameMap();
+		
+		String portCities = m.getClass().getResource("/maps/portCities.txt").getPath();
+		String seas = m.getClass().getResource("/maps/seas.txt").getPath();
+		m.init(inlandCities, portCities, seas);
+		
+		// Load Maps.
+		
+		String rail = m.getClass().getResource("/maps/rail.txt").getPath();
+		String sea = m.getClass().getResource("/maps/sea.txt").getPath();
+		m.loadMaps(road, rail, sea);
+		
+		return m;
 	}
 }

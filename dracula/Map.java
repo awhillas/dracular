@@ -28,7 +28,7 @@ public interface Map {
 	boolean isAtSea(String location);
 	
 	/*
-         * Uses the pathfinder to get Route from one location to another using specified travel type
-         */
-        ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by);
+     * Uses the pathfinder to get Route from one location to another using specified travel type
+     */
+    ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by);
 }

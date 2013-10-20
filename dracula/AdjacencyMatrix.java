@@ -1,6 +1,5 @@
 package dracula;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * Adjacency Matrix for an undirected graph i.e. matrix is symmetrical.
@@ -121,6 +120,67 @@ public class AdjacencyMatrix implements Graph {
         }
     }
 
+    private HashMap<String, List<String>> namedEdges;
+    
+    public HashMap<String, List<String>> edgesAsReadonly() {
+		// Lazy creation.
+    	if (namedEdges == null) {
+    		namedEdges = new HashMap<String, List<String>>();
+    		
+    		for (int i = 0; i < edges.length; i++) {
+    			for (int j = 0; j < edges.length; j++) {
+    				if (edges[i][j] == 1) {
+    					String vi = this.vertices[i];
+    					String vj = this.vertices[j];
+    					
+    					// Edge already added under j?
+    					if (namedEdges.containsKey(vj) && namedEdges.get(vj).contains(vi)) {
+    						// Do nothing.
+    					}
+    					else {
+    						// Add under i, i first time?
+    						if (!namedEdges.containsKey(vi)) {
+        						List<String> edge = new ArrayList<String>();
+        						edge.add(vj);
+        						namedEdges.put(vi, edge);
+    						}
+    						else {
+    							// append j to i's edges
+    							if (!(namedEdges.get(vi).contains(vj))) {
+    								namedEdges.get(vi).add(vj);
+    							}
+    							else {
+    								// Should never get here!
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    		
+    		// Make readonly.
+    		Collections.unmodifiableMap(namedEdges);
+    	}
+    	return namedEdges;
+    }
+    
+    @Override
+    public int hashCode() {
+    	int hash = 0;
+    	
+    	for (String v : edgesAsReadonly().keySet()) {
+    		int hv = v.hashCode(); // Hash of v
+    		for (String e : edgesAsReadonly().get(v)) {
+    			int he = e.hashCode(); // Hash of e
+    			
+    			// Symmetric hashing to ensure ordering of hv and he doesn't affect result.
+    			// Take both sum and product, concatenate as string 
+    			String h = (hv + he) + "" + (hv * he);
+    			hash += h.hashCode();
+    		}
+    	}
+    	return Math.abs(hash);
+    }
     
     public static void main(String[] args) {
         // Testing

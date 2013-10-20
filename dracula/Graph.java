@@ -1,4 +1,7 @@
 package dracula;
+
+import java.util.*;
+
 /**
  * @author arbw870
  *
@@ -29,4 +32,11 @@ public interface Graph {
 	 * @return	True if the two vertices are adjacent, false otherwise.
 	 */
 	public boolean areAdjacent(String v, String w);
+	
+	/**
+	 * Gets a read-only map of the edges in the graph. Edges are un-directed and each appears only once. 
+	 * Key: a vertex. 
+	 * Value: vertices immediately connected to the keyed vertex.
+	 */
+	public HashMap<String, List<String>> edgesAsReadonly();
 }
