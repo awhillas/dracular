@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
 
+
 public class GameData {
 	ArrayList<MoveData> MovesData = new ArrayList<MoveData>(); 
 	MoveData[] DraculaTrail = new MoveData[6];
@@ -28,7 +29,7 @@ public class GameData {
 		
 		turn = 0;
 		round = 0;
-		score = 300;
+		score = 366;
 		vampire = "";
 		
 		//Get the default map data from the graph inputs

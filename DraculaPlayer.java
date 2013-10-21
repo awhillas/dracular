@@ -1,6 +1,6 @@
-import GameData;
-import HunterPlayer;
-import LocationData;
+import dracula.GameData;
+import dracula.HunterPlayer;
+import dracula.LocationData;
 
 /**
  * Written for COMP9024 2013s2.
