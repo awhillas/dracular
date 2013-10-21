@@ -1,3 +1,4 @@
+package dracula;
 /**
  * Written for COMP9024 2013s2.
  * @author adwi001
@@ -7,8 +8,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
-
-import dracula.DraculaPlayer;
 
 public class GameData {
 	ArrayList<MoveData> MovesData = new ArrayList<MoveData>(); 
@@ -29,7 +28,7 @@ public class GameData {
 		
 		turn = 0;
 		round = 0;
-		score = 366;
+		score = 300;
 		vampire = "";
 		
 		//Get the default map data from the graph inputs

@@ -1,7 +1,4 @@
-import GameData;
-import HunterPlayer;
-import LocationData;
-
+package dracula;
 /**
  * Written for COMP9024 2013s2.
  * @author adwi001
@@ -36,7 +33,6 @@ public class DraculaPlayer implements Player {
 		this.Gamedata = data;
 		this.events = Gamedata.move.events.substring(0,2);
 		this.action = Gamedata.move.events.substring(2,3);
-		this.castle = false;
 		this.setLocation();
 		this.setEvents();
 	}
@@ -59,8 +55,7 @@ public class DraculaPlayer implements Player {
 	public void setLocation() {
 		this.location = Gamedata.move.location;
 		//DoubleBack
-		// TODO digits
-		if (this.location.contains("D")) {
+		if (this.location.contains("S")) {
 			doubleBackLast = 6;
 			doubleBack = true;
 		} else {
@@ -73,17 +68,12 @@ public class DraculaPlayer implements Player {
 		} else {
 			hidden = false;
 		}
-		//Sea travel
-		if (this.location.contains("Sea")) {
-			//this.setHealth(-2);
-		}
-		
 		//Teleport
-		// TODO health increases
 		if (this.location.contains("TP") || this.location.contains("CD")) {
 			castle = true;
-			this.setHealth(10);
-		} 
+		} else {
+			castle = false;
+		}
 		
 		if (doubleBackLast > 0) {
 			doubleBackLast--;
@@ -100,7 +90,7 @@ public class DraculaPlayer implements Player {
 		if (events.contains("T")) {
 			//Set a trap
 			if (Gamedata.MapData.get(this.location) == null) {
-				LocationData loc = new LocationData(this.location, "Town"); //Town, Port, Sea, Home
+				LocationData loc = new LocationData(this.location, "LAND");
 				loc.setTrap();
 				Gamedata.MapData.put(this.location, loc);
 			} else {
@@ -109,7 +99,7 @@ public class DraculaPlayer implements Player {
 		}
 		if (events.contains("V")) {
 			if (Gamedata.MapData.get(this.location) == null) {
-				LocationData loc = new LocationData(this.location, "Town");
+				LocationData loc = new LocationData(this.location, "LAND");
 				loc.vampire = true;
 				Gamedata.MapData.put(this.location, loc);
 			} else {
@@ -120,7 +110,6 @@ public class DraculaPlayer implements Player {
 		
 		//Dracula's Actions
 		if (action.contains("V")) {
-			// TODO score update
 			//Get the vampire location and clear it from map data
 			if (Gamedata.MapData.get(Gamedata.vampire).traps == 0) {
 				Gamedata.MapData.remove(Gamedata.vampire);
@@ -130,7 +119,7 @@ public class DraculaPlayer implements Player {
 			Gamedata.vampire = "";
 		}
 		if (action.contains("M")) {
-			//Get the trap from the queue and clear it from map data - 
+			//Get the trap from the queue and clear it from map data - TEST 
 			String trap = Gamedata.DraculaTrail[(Gamedata.round-5) % 6].location;
 			Gamedata.MapData.get(trap).removeTrap();
 		}
@@ -145,9 +134,9 @@ public class DraculaPlayer implements Player {
 	@Override
 	public void setHealth(int amount) {
 		this.health += amount;
-		//Draculas health is permitted to go beyond 40
-		if (this.health < 1) {
-			// TODO status
+		if (this.health > 40) {
+			this.health = 40;
+		} else if (this.health < 1) {
 			this.status = 0; //status 0 which will force a move back to hospital
 			this.health = 0;
 		}

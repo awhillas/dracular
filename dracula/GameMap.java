@@ -1,4 +1,6 @@
+package dracula;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 
@@ -21,7 +23,7 @@ public class GameMap implements Map {
 	
 	// Mixed land and sea, for quick lookup
 	private HashMap<String, String> locationToCodes = new HashMap<String, String>();
-		
+	
 	public void init(String inlandLocations, String portLocations, String seaLocationsFile) {
 		try {
 			loadLocationCodes(inlandLocations, this.inlandLocations);
@@ -173,5 +175,29 @@ public class GameMap implements Map {
             default:
                 return new ArrayList<String>();
         }
+    }
+    
+    @Override
+    public int hashCode() {
+    	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
+    	return Math.abs(hash);
+    }
+    
+    public static GameMap getDracularsMap() {
+		GameMap m = new GameMap();
+
+		// Init.
+		URL inlandCities = m.getClass().getResource("/maps/inlandCities.txt");
+		URL portCities = m.getClass().getResource("/maps/portCities.txt");
+		URL seas = m.getClass().getResource("/maps/seas.txt");
+		m.init(inlandCities.getPath(), portCities.getPath(), seas.getPath());
+		
+		// Load Maps.
+		URL road = m.getClass().getResource("/maps/road.txt");
+		URL rail = m.getClass().getResource("/maps/rail.txt");
+		URL sea = m.getClass().getResource("/maps/sea.txt");
+		m.loadMaps(road.getPath(), rail.getPath(), sea.getPath());
+		
+		return m;
     }
 }
