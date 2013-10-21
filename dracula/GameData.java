@@ -24,6 +24,16 @@ public class GameData {
 	int turn;
 	int round;
 	int score;
+	
+	public boolean isInDracTrail (String city){
+		for (int i=0; i< MovesData.size(); i++){
+			if (city == MovesData.get(i).location){
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public GameData() {
 		

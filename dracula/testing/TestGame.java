@@ -47,7 +47,7 @@ public class TestGame {
 		//Traps work, hospitals work, Encounters work
 		String testString = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE.... SNET... HGTTT.. MJM.... DKVT... GJM.... DCD....";
 		String[] messagesTest;
-		
+/*		
 		
 		LocationData loc1 = new LocationData("GT", "Town");
 		LocationData loc2 = new LocationData("NE", "Town");
@@ -104,6 +104,6 @@ public class TestGame {
 		
 		//All of the data should be input now
 		//It is Draculas move, move based on the data
-
+*/
 	}
 }
