@@ -12,17 +12,17 @@ import java.util.Queue;
 
 public class GameData {
 	ArrayList<MoveData> MovesData = new ArrayList<MoveData>(); 
-	MoveData[] DraculaTrail = new MoveData[6];
+	public MoveData[] DraculaTrail = new MoveData[6];
 	//Queue<MoveData> DraculaTrail;
-	HashMap<String, HunterPlayer> HuntersData = new HashMap<String, HunterPlayer>();
-	HashMap<String, LocationData> MapData = new HashMap<String, LocationData>();
-	DraculaPlayer dracula;
+	public HashMap<String, HunterPlayer> HuntersData = new HashMap<String, HunterPlayer>();
+	public HashMap<String, LocationData> MapData = new HashMap<String, LocationData>();
+	public DraculaPlayer dracula;
 	String[] playerMoves;
 	
-	MoveData move;
-	String vampire;
+	public MoveData move;
+	public String vampire;
 	int turn;
-	int round;
+	public int round;
 	int score;
 	
 	public boolean isInDracTrail (String city){

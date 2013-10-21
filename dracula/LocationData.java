@@ -8,8 +8,8 @@ package dracula;
 public class LocationData {
 	String location;
 	String type;
-	boolean vampire;
-	int traps;
+	public boolean vampire;
+	public int traps;
 	
 	public LocationData(String location, String type) {
 		this.location = location;

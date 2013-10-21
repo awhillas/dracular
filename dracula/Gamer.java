@@ -27,7 +27,7 @@ public class Gamer implements Dracula {
 		// Parse the past plays and build a model of the state of the world
 		world = new GameData();
 		world.doString(pastPlays);
-		map = GameMap.getDracularsMap();
+		map = new GameMap();
 	}
 
 	/**

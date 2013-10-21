@@ -17,7 +17,7 @@ public class TestMap {
 		 * Map basic tests
 		 * 
 		 */
-		Map m = createMap();
+		Map m = new GameMap();
 		
 		// Madrid
 		assert m.getAdjacentFor("MA", EnumSet.allOf(TravelBy.class)).size() == 10;
@@ -47,17 +47,18 @@ public class TestMap {
 		int h = m.hashCode();
 		assert h == 1234107428;
 		
+		/*
 		// Modify map, change "BE" for Belgrade to "BL", rest is the same
-		String inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
-		String road = TestMap.class.getResource("/maps/road.txt").getPath();
+		String inlandCities = TestMap.class.getResource(GameMap.getFullPath("for testing/inlandCities.txt")).getPath();
+		String road = TestMap.class.getResource(GameMap.getFullPath("road.txt")).getPath();
 		m = createMap(inlandCities, road);
 		h = m.hashCode(); 
 		assert h == 500910866;
 		
 		// Continue modifying map, change road between Alicante -- Madrid to Madrid -- Alicante 
 		// Hash should be the same.
-		inlandCities = TestMap.class.getResource("/maps/tests/inlandCities.txt").getPath();
-		road = TestMap.class.getResource("/maps/tests/road.txt").getPath();
+		inlandCities = TestMap.class.getResource(GameMap.getFullPath("for testing/inlandCities.txt")).getPath();
+		road = TestMap.class.getResource(GameMap.getFullPath("for testing/road.txt")).getPath();
 		m = createMap(inlandCities, road);
 		h = m.hashCode();
 		assert h == 500910866;
@@ -66,6 +67,7 @@ public class TestMap {
 		m = createMap();
 		h = m.hashCode();
 		assert h == 1234107428;
+		*/
 		
 		/*
 		 * Path tests
@@ -100,29 +102,5 @@ public class TestMap {
             System.out.print(path.get(i)+ ", ");
         }
         System.out.println();
-	}
-	
-	private static Map createMap()
-	{
-		// Default.
-		String inlandCities = TestMap.class.getResource("/maps/inlandCities.txt").getPath();
-		String road = TestMap.class.getClass().getResource("/maps/road.txt").getPath();
-		return createMap(inlandCities, road);
-	}
-	
-	private static Map createMap(String inlandCities, String road) {
-		Map m = new GameMap();
-		
-		String portCities = m.getClass().getResource("/maps/portCities.txt").getPath();
-		String seas = m.getClass().getResource("/maps/seas.txt").getPath();
-		m.init(inlandCities, portCities, seas);
-		
-		// Load Maps.
-		
-		String rail = m.getClass().getResource("/maps/rail.txt").getPath();
-		String sea = m.getClass().getResource("/maps/sea.txt").getPath();
-		m.loadMaps(road, rail, sea);
-		
-		return m;
 	}
 }

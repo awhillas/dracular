@@ -13,17 +13,17 @@ import dracula.LocationData;
 public class DraculaPlayer implements Player {
 	GameData Gamedata;
 	
-	String location;
-	String events;
-	String action;
+	public String location;
+	public String events;
+	public String action;
 	 
-	boolean hidden;
+	public boolean hidden;
 	boolean doubleBack;
 	boolean castle;
 	int doubleBackLast;
 	int hiddenLast;
-	int health;
-	int status;
+	public int health;
+	public int status;
 	
 	public DraculaPlayer () {
 		this.status = 1;
@@ -128,7 +128,7 @@ public class DraculaPlayer implements Player {
 			} else {
 				Gamedata.MapData.get(Gamedata.vampire).vampire = false;
 			}
-			Gamedata.vampire = "";
+			//Gamedata.vampire = "";
 		}
 		if (action.contains("M")) {
 			//Get the trap from the queue and clear it from map data - 

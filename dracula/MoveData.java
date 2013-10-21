@@ -8,8 +8,8 @@ package dracula;
 public class MoveData {
 	String play;
 	Player player;
-	String location;
-	String events;
+	public String location;
+	public String events;
 	
 	public MoveData(String play) {
 		this.play = play;
