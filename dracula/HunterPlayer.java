@@ -8,14 +8,14 @@ package dracula;
 
 public class HunterPlayer implements Player {
 	GameData GameData;
-	String name;
-	String location;
-	String encounters;
+	public String name;
+	public String location;
+	public String encounters;
 	boolean draculaEncounter;
 	boolean hospital;
 	int trapEncounter;
-	int health;
-	int status;
+	public int health;
+	public int status;
 	
 	public HunterPlayer(String name) {
 		this.name = name;

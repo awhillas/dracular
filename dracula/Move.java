@@ -29,9 +29,9 @@ public class Move {
 	}
 	
 	public void doAction() {
-		if (Gamedata.round % 13 == 0 && Gamedata.vampire) {
+		if (Gamedata.round % 13 == 0 && Gamedata.vampire == "") {
 			this.action = "V";
-			Gamedata.vampire = false;
+			Gamedata.vampire = "";
 			Gamedata.MapData.get(Gamedata.dracula.location).vampire = false;
 		} else {
 			// TODO cancel out last trap from map
@@ -41,7 +41,7 @@ public class Move {
 	
 	public void setVampire() {
 		if (Gamedata.round % 13 == 0) {
-			Gamedata.vampire = true;
+			Gamedata.vampire = "";
 			Gamedata.MapData.get(Gamedata.dracula.location).vampire = true;
 		}
 	}

@@ -1,6 +1,5 @@
 package dracula;
-import java.io.*;
-import java.net.URL;
+
 import java.util.*;
 
 
@@ -24,117 +23,64 @@ public class GameMap implements Map {
 	// Mixed land and sea, for quick lookup
 	private HashMap<String, String> locationToCodes = new HashMap<String, String>();
 	
-	public void init(String inlandLocations, String portLocations, String seaLocationsFile) {
-		try {
-			loadLocationCodes(inlandLocations, this.inlandLocations);
-			loadLocationCodes(portLocations, this.portLocations);
-			loadLocationCodes(seaLocationsFile, this.seaLocations);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void loadLocationCodes(String locationCodeFile, List<String> codeList) throws Exception {
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(locationCodeFile));
-			String line;
-	
-			while ((line = br.readLine()) != null) {
-			    // process line.  e.g. || AL || Alicante ||
-				String[] parts = line.split("\\|\\|");
-				if (parts.length != 3)
-					throw new Exception(String.format("Invalid line \"%s\" in location code file! (%s)", line, locationCodeFile));
-
-				String code = parts[1].trim();
-				String location = parts[2].trim();
-				
-				if (this.locationToCodes.containsKey(location))
-					throw new Exception(String.format("Duplicate location or code \"%s, %s\" found in location code file! (%s)", location, code, locationCodeFile));
-
-				codeList.add(code);
-				
-				// Cache.
-				locationToCodes.put(location, code);
-			}
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			if (br != null)
-				br.close();
-		}
-	}
-
-	public void loadMaps(String roadMap, String railMap, String seaMap) {
-		try {
-			// Land.
-			String[] nodes = new String[inlandLocations.size() + portLocations.size()];
-			List<String> combinedLocations = new ArrayList<String>();
-			combinedLocations.addAll(inlandLocations);
-			combinedLocations.addAll(portLocations);
-			combinedLocations.toArray(nodes);
-			
-			this.roads = new AdjacencyMatrix(nodes, loadMap(roadMap, combinedLocations));
-			this.rails = new AdjacencyMatrix(nodes, loadMap(railMap, combinedLocations));
-			
-			// Sea.
-			nodes = new String[seaLocations.size() + portLocations.size()];
-			combinedLocations = new ArrayList<String>();
-			combinedLocations.addAll(portLocations);
-			combinedLocations.addAll(seaLocations);
-			combinedLocations.toArray(nodes);
-			
-			this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(seaMap, combinedLocations));
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public GameMap() {
+		// Location Codes.
+		loadLocationCodes(GameMapStrings.inlandCities(), this.inlandLocations);
+		loadLocationCodes(GameMapStrings.portCities(), this.portLocations);
+		loadLocationCodes(GameMapStrings.seas(), this.seaLocations);
+		
+		// Load Land Maps.
+		String[] nodes = new String[inlandLocations.size() + portLocations.size()];
+		List<String> combinedLocations = new ArrayList<String>();
+		combinedLocations.addAll(inlandLocations);
+		combinedLocations.addAll(portLocations);
+		combinedLocations.toArray(nodes);
+		
+		this.roads = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.roadMap(), combinedLocations));
+		this.rails = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.railMap(), combinedLocations));
+		
+		// Load Sea Map.
+		nodes = new String[seaLocations.size() + portLocations.size()];
+		combinedLocations = new ArrayList<String>();
+		combinedLocations.addAll(portLocations);
+		combinedLocations.addAll(seaLocations);
+		combinedLocations.toArray(nodes);
+		
+		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedLocations));
 	}
 	
-	/**
-	 * 
-	 * @param 	mapFile:			a file containing routes between 2 locations			
-	 * @param 	combinedLocations	combined inland and port locations, or combined port and sea locations
-	 * @return						a matrix for the adjacency matrix
-	 * @throws 	Exception
-	 */
-	private int[][] loadMap(String mapFile, List<String> combinedLocations) throws Exception {
+	private void loadLocationCodes(List<String> locationStrings, List<String> codeList) {
+		for (String line : locationStrings) {
+			// process line.  e.g. || AL || Alicante ||
+			String[] parts = line.split("\\|\\|");
+			String code = parts[1].trim();
+			String location = parts[2].trim();
+
+			codeList.add(code);
+			
+			// Cache.
+			locationToCodes.put(location, code);
+		}
+	}
+
+	private int[][] loadMap(List<String> mapLines, List<String> combinedLocations) {
 		int size = combinedLocations.size();
 		int[][] matrix = new int[size][size];
-
-		BufferedReader br = null;		
-		try {
-			br = new BufferedReader(new FileReader(mapFile));
-			String line;
+		
+		for (String line : mapLines) {
+		    // process line.  e.g. Alicante -- Madrid 
+			String[] parts = line.split("--");
+			String loc1 = parts[0].trim();
+			String loc2 = parts[1].trim();
 			
-			while ((line = br.readLine()) != null) {
-			    // process line.  e.g. Alicante -- Madrid 
-				String[] parts = line.split("--");
-				if (parts.length != 2)
-					throw new Exception(String.format("Invalid line \"%s\" in map file! (%s), ensure each line is in the format of \"Location1 -- Location2\"", line, mapFile));
-				String loc1 = parts[0].trim();
-				String loc2 = parts[1].trim();
-				
-				if (!this.locationToCodes.containsKey(loc1))
-					throw new Exception(String.format("Invalid location \"%s\" in map file! (%s)", loc1, mapFile));
-				if (!this.locationToCodes.containsKey(loc2))
-					throw new Exception(String.format("Invalid location \"%s\" in map file! (%s)", loc2, mapFile));
-				
-				// Get index of location code.
-				int idx1 = combinedLocations.indexOf(locationToCodes.get(loc1));
-				int idx2 = combinedLocations.indexOf(locationToCodes.get(loc2));
+			// Get index of location code.
+			int idx1 = combinedLocations.indexOf(locationToCodes.get(loc1));
+			int idx2 = combinedLocations.indexOf(locationToCodes.get(loc2));
 
-				// Update matrix.
-				matrix[idx1][idx2] = matrix[idx2][idx1] = 1;
-			}
-			return matrix;			
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			if (br != null)
-				br.close();
-		}		
+			// Update matrix.
+			matrix[idx1][idx2] = matrix[idx2][idx1] = 1;
+		}
+		return matrix;	
 	}
 
 	@Override
@@ -181,23 +127,5 @@ public class GameMap implements Map {
     public int hashCode() {
     	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
     	return Math.abs(hash);
-    }
-    
-    public static GameMap getDracularsMap() {
-		GameMap m = new GameMap();
-
-		// Init.
-		URL inlandCities = m.getClass().getResource("/maps/inlandCities.txt");
-		URL portCities = m.getClass().getResource("/maps/portCities.txt");
-		URL seas = m.getClass().getResource("/maps/seas.txt");
-		m.init(inlandCities.getPath(), portCities.getPath(), seas.getPath());
-		
-		// Load Maps.
-		URL road = m.getClass().getResource("/maps/road.txt");
-		URL rail = m.getClass().getResource("/maps/rail.txt");
-		URL sea = m.getClass().getResource("/maps/sea.txt");
-		m.loadMaps(road.getPath(), rail.getPath(), sea.getPath());
-		
-		return m;
     }
 }

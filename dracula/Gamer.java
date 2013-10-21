@@ -27,7 +27,7 @@ public class Gamer implements Dracula {
 		// Parse the past plays and build a model of the state of the world
 		world = new GameData();
 		world.doString(pastPlays);
-		map = GameMap.getDracularsMap();
+		map = new GameMap();
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class Gamer implements Dracula {
 	@Override
 	public DraculaMove decideMove() {
 		String currentCity = world.dracula.location;
-		List<String> options = map.getAdjacentFor(currentCity, EnumSet.allOf(TravelBy.class));
+		List<String> options = map.getAdjacentFor(currentCity, EnumSet.of(TravelBy.road, TravelBy.sea, TravelBy.rail));
 		
 		// Replace this with something more intelligent.
 		// Perhaps start by eliminating cites with Hunters

@@ -1,6 +1,7 @@
 import dracula.GameData;
 import dracula.HunterPlayer;
 import dracula.LocationData;
+import dracula.Player;
 
 /**
  * Written for COMP9024 2013s2.
@@ -41,7 +42,7 @@ public class DraculaPlayer implements Player {
 		this.setEvents();
 	}
 	
-	@Override
+	
 	public Player copyFromLast(DraculaPlayer activeDracula) {
 		this.location = activeDracula.location;
 		this.events = activeDracula.events;
@@ -115,7 +116,7 @@ public class DraculaPlayer implements Player {
 			} else {
 				Gamedata.MapData.get(this.location).vampire = true;
 			}
-			Gamedata.vampire = this.location;
+			//Gamedata.vampire = this.location;
 		}
 		
 		//Dracula's Actions
@@ -127,7 +128,7 @@ public class DraculaPlayer implements Player {
 			} else {
 				Gamedata.MapData.get(Gamedata.vampire).vampire = false;
 			}
-			Gamedata.vampire = "";
+			//Gamedata.vampire = "";
 		}
 		if (action.contains("M")) {
 			//Get the trap from the queue and clear it from map data - 
@@ -151,6 +152,12 @@ public class DraculaPlayer implements Player {
 			this.status = 0; //status 0 which will force a move back to hospital
 			this.health = 0;
 		}
+	}
+
+	@Override
+	public Player copyFromLast(dracula.DraculaPlayer activeDracula) {
+		// TODO Auto-generated method stub
+		return null;
 	}	
 }
 
