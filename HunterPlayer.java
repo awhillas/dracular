@@ -88,8 +88,10 @@ public class HunterPlayer implements Player {
 			GameData.MapData.get(this.location).removeTrap();
 		}
 		//Location is empty, remove it
-		if (GameData.MapData.get(this.location).traps == 0 && !GameData.MapData.get(this.location).vampire) {
-			GameData.MapData.remove(this.location);
+		if (GameData.MapData.get(this.location) != null) {
+			if (GameData.MapData.get(this.location).traps == 0 && !GameData.MapData.get(this.location).vampire) {
+				GameData.MapData.remove(this.location);
+			}
 		}
 	}
 

@@ -27,7 +27,7 @@ public class GameData {
 		
 		turn = 0;
 		round = 0;
-		score = 300;
+		score = 366;
 		vampire = "";
 		
 		//Get the default map data from the graph inputs

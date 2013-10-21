@@ -15,15 +15,19 @@ public class LocationData {
 		this.type = type; //Sea, Hospital, Town
 	}
 	
-	public void setTrap() {
+	public boolean setTrap() {
 		if (traps < 3){
 			this.traps++;
+			return true;
 		}
+		return false;
 	}
 	
-	public void removeTrap() {
+	public boolean removeTrap() {
 		if (traps > 0) {
 			this.traps--;
+			return true;
 		}
+		return false;
 	}
 }

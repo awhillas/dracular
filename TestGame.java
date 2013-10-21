@@ -39,12 +39,21 @@ public class TestGame {
 	
 	public static void main(String[] args) {
 		GameData Gamedata = new GameData();
-		String test1 = "GBE.... SBR.... HLO.... MCA.... DC?.V..";
-		String test2 = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE....";
-		String[] messages1;
+		
+		//Traps work, hospitals work, Encounters work
+		String testString = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE.... SNET... HGTTT.. MJM.... DKVT... GJM.... DCD....";
+		String[] messagesTest;
+		
+		
+		LocationData loc1 = new LocationData("GT", "Town");
+		LocationData loc2 = new LocationData("NE", "Town");
+		Gamedata.MapData.put("GT", loc1);
+		Gamedata.MapData.put("NE", loc2);
+		Gamedata.MapData.get("GT").traps = 2;
+		Gamedata.MapData.get("NE").traps = 1;
 		
 		//Builds board data from pastPlays string
-		Gamedata.doString(test2);
+		Gamedata.doString(testString);
 		//Builds current state of Dracula
 		//update the game state and player states
 		System.out.println("Player: Dracula");
@@ -81,13 +90,6 @@ public class TestGame {
 		System.out.println("Location: "+Gamedata.HuntersData.get("M").location);
 		System.out.println("Status: "+Gamedata.HuntersData.get("M").status);
 		System.out.println("Encounters: "+Gamedata.HuntersData.get("M").encounters);
-		
-		//HunterPlayer hunter5 = (HunterPlayer) Gamedata.MovesData.get(5).player;
-		//HunterPlayer hunter6 = (HunterPlayer) Gamedata.MovesData.get(6).player;
-		
-//		if (hunter5.equals(hunter6)) {
-//			System.out.println("Moves matched");
-//		}
 		
 		assert Gamedata.dracula.events.length() == 2;
 		assert Gamedata.dracula.action.length() == 1;
