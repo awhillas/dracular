@@ -1,6 +1,9 @@
-package dracula;
+package dracula.impl.map;
 
 import java.util.*;
+
+import dracula.impl.*;
+import dracula.impl.ai.PathFinder;
 
 
 /**
@@ -19,6 +22,10 @@ public class GameMap implements Map {
 	private AdjacencyMatrix roads;
 	private AdjacencyMatrix rails;
 	private AdjacencyMatrix seaRoutes;
+	
+	private List<Location> allLocations = new ArrayList<Location>();
+	private Location hospital;
+	private Location castle;
 	
 	// Mixed land and sea, for quick lookup
 	private HashMap<String, String> locationToCodes = new HashMap<String, String>();
@@ -44,9 +51,23 @@ public class GameMap implements Map {
 		combinedLocations = new ArrayList<String>();
 		combinedLocations.addAll(portLocations);
 		combinedLocations.addAll(seaLocations);
+		
 		combinedLocations.toArray(nodes);
 		
 		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedLocations));
+		
+		// Create a list of Locations.
+		combinedLocations.addAll(inlandLocations);
+		for (String s : combinedLocations) {
+			Location loc = new Location(s);
+			
+			if (s.equals("JM"))
+				this.hospital = loc;
+			if (s.equals("CD"))
+				this.castle = loc;
+			
+			allLocations.add(loc);
+		}
 	}
 	
 	private void loadLocationCodes(List<String> locationStrings, List<String> codeList) {
@@ -84,23 +105,43 @@ public class GameMap implements Map {
 	}
 
 	@Override
-	public List<String> getAdjacentFor(String location, EnumSet<TravelBy> by) {
-		List<String> locs = new ArrayList<String>();
+	public List<Location> getAdjacentFor(Location location, EnumSet<TravelBy> by) {
+		List<String> adjacencies = new ArrayList<String>();
 		if (by.contains(TravelBy.road)) {
-			locs.addAll(Arrays.asList(this.roads.adjacentVertices(location)));
+			adjacencies.addAll(Arrays.asList(this.roads.adjacentVertices(location.getName())));
 		}
 		if (by.contains(TravelBy.rail)) {
-			locs.addAll(Arrays.asList(this.rails.adjacentVertices(location)));
+			adjacencies.addAll(Arrays.asList(this.rails.adjacentVertices(location.getName())));
 		}
 		if (by.contains(TravelBy.sea)) {
-			locs.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location)));
+			adjacencies.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location.getName())));
 		}
-		return locs;
+		
+		List<Location> result = new ArrayList<Location>();
+		for (String l : adjacencies) {
+			for (Location loc : allLocations) {
+				if (loc.getName().equals(l)) {
+					result.add(loc);
+					break;
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
-	public boolean isAtSea(String loc) {
-		return this.seaLocations.contains(loc);
+	public boolean isAtSea(Location loc) {
+		return this.seaLocations.contains(loc.getName());
+	}
+	
+	@Override
+	public Location getHospital() {
+		return this.hospital;
+	}
+
+	@Override
+	public Location getCastle() {
+		return this.castle;
 	}
 	
 	/*
@@ -128,4 +169,6 @@ public class GameMap implements Map {
     	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
     	return Math.abs(hash);
     }
+
+
 }

@@ -1,4 +1,4 @@
-package dracula;
+package dracula.impl.map;
 
 import java.util.*;
 

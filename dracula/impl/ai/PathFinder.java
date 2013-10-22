@@ -1,6 +1,7 @@
-package dracula;
+package dracula.impl.ai;
 
-import java.util.ArrayList;
+import java.util.*;
+import dracula.impl.map.*;
 
 /**
  * @author jemu057

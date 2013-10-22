@@ -1,12 +1,9 @@
-package dracula.testing;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.*;
-import java.util.*;
+package dracula.impl.testing;
 
-import dracula.*;
-import dracula.Map;
+import java.util.*;
+import dracula.impl.*;
+import dracula.impl.map.*;
+import dracula.impl.map.Map;
 
 
 public class TestMap {
@@ -20,25 +17,28 @@ public class TestMap {
 		Map m = new GameMap();
 		
 		// Madrid
-		assert m.getAdjacentFor("MA", EnumSet.allOf(TravelBy.class)).size() == 10;
-		assert m.getAdjacentFor("MA", EnumSet.of(TravelBy.road)).size() == 6;
-		assert m.getAdjacentFor("MA", EnumSet.of(TravelBy.rail)).size() == 4;
-		assert m.getAdjacentFor("MA", EnumSet.of(TravelBy.sea)).size() == 0;
+		Location ma = new Location("MA");
+		assert m.getAdjacentFor(ma, EnumSet.allOf(TravelBy.class)).size() == 10;
+		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.road)).size() == 6;
+		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.rail)).size() == 4;
+		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.sea)).size() == 0;
 		
 		// Cagliari
-		assert m.getAdjacentFor("CG", EnumSet.allOf(TravelBy.class)).size() == 2;
-		assert m.getAdjacentFor("CG", EnumSet.of(TravelBy.road)).size() == 0;
-		assert m.getAdjacentFor("CG", EnumSet.of(TravelBy.rail)).size() == 0;
-		assert m.getAdjacentFor("CG", EnumSet.of(TravelBy.sea)).size() == 2;
+		Location cg = new Location("CG");
+		assert m.getAdjacentFor(cg, EnumSet.allOf(TravelBy.class)).size() == 2;
+		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.road)).size() == 0;
+		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.rail)).size() == 0;
+		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.sea)).size() == 2;
 				
 		// Venice
-		assert m.getAdjacentFor("VE", EnumSet.allOf(TravelBy.class)).size() == 6;
-		assert m.getAdjacentFor("VE", EnumSet.of(TravelBy.road)).size() == 4;
-		assert m.getAdjacentFor("VE", EnumSet.of(TravelBy.rail)).size() == 1;
-		assert m.getAdjacentFor("VE", EnumSet.of(TravelBy.sea)).size() == 1;
+		Location ve = new Location("VE");
+		assert m.getAdjacentFor(ve, EnumSet.allOf(TravelBy.class)).size() == 6;
+		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.road)).size() == 4;
+		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.rail)).size() == 1;
+		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.sea)).size() == 1;
 		
-		assert !m.isAtSea("VE");
-		assert m.isAtSea("NS");
+		assert !m.isAtSea(ve);
+		assert m.isAtSea(new Location("NS"));
 		
 		/*
 		 * Map Hash tests

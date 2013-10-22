@@ -1,7 +1,5 @@
-import dracula.GameData;
-import dracula.HunterPlayer;
-import dracula.LocationData;
-import dracula.Player;
+import dracula.impl.*;
+
 
 /**
  * Written for COMP9024 2013s2.
@@ -138,12 +136,6 @@ public class DraculaPlayer implements Player {
 	}
 
 	@Override
-	public Player copyFromLast(HunterPlayer activeHunter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void setHealth(int amount) {
 		this.health += amount;
 		//Draculas health is permitted to go beyond 40
@@ -153,11 +145,5 @@ public class DraculaPlayer implements Player {
 			this.health = 0;
 		}
 	}
-
-	@Override
-	public Player copyFromLast(dracula.DraculaPlayer activeDracula) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
 }
 

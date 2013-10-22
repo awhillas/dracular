@@ -1,4 +1,4 @@
-package dracula;
+package dracula.impl.ai;
 import java.util.ArrayList;
 
 /**

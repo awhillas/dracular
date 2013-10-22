@@ -1,35 +1,25 @@
 /**
  * Written for COMP9024 2013s2 at UNSW Kensington.
  * @author dstacey@cse.unsw.edu.au
- * @author arbw870
-
- * EDIT this file
+ *
+ *  EDIT this file
  */
-
+ 
 package dracula;
-
+ 
 import dracula.Dracula;
-
+import dracula.impl.*;
+ 
 public class PlayerFactory {
+	
+	private static Game game;
+	
+	public static Dracula getDracula(String pastPlays, String[] messages) {
+		if (game == null) {
+			game = new Game();
+		}
 
-   public static Dracula getDracula(String pastPlays, String[] messages) {
-      return new Gamer(pastPlays, messages);
-   }
-   
-   public static void main (String[] args) {
-	   
-	   // testing
-	   
-	   String pastPlays = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE....";
-	   String[] messages = {};
-	   
-	   Dracula d = PlayerFactory.getDracula( pastPlays, messages );
-	   if (d == null) {
-	      throw new UnsupportedOperationException("No Dracula selected.");
-	   }
-	   DraculaMove move = d.decideMove();
-	   
-	   System.out.println("Next move is: " + move.getPlayAsString());
-   }
-
+		game.update(pastPlays, messages);
+		return game.getDracula();
+	}
 }

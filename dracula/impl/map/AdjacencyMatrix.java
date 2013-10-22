@@ -1,5 +1,9 @@
-package dracula;
+package dracula.impl.map;
+
 import java.util.*;
+
+import dracula.impl.*;
+import dracula.impl.ai.SearchPriorityQueue;
 
 /**
  * Adjacency Matrix for an undirected graph i.e. matrix is symmetrical.

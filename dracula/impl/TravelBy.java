@@ -1,4 +1,4 @@
-package dracula;
+package dracula.impl;
 
 public enum TravelBy {
 	road,
