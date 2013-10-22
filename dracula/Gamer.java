@@ -42,7 +42,7 @@ public class Gamer implements Dracula {
 	@Override
 	public DraculaMove decideMove() {
 		String currentCity = world.dracula.location;
-		List<String> options = map.getAdjacentFor(currentCity, EnumSet.of(TravelBy.road).of(TravelBy.sea));
+		List<String> options = map.getAdjacentFor(currentCity, EnumSet.of(TravelBy.road, TravelBy.sea));
 		//List<String> nonOptions = 
 		
 		// Replace this with something more intelligent.
