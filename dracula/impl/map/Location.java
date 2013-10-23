@@ -3,6 +3,7 @@ package dracula.impl.map;
 public class Location {
 	
 	private String name;
+	private boolean vampire;
 	private int numOfTraps;
 	
 	public Location(String name) {
@@ -20,6 +21,14 @@ public class Location {
 		if (numOfTraps > 0) {
 			this.numOfTraps--;
 		}
+	}
+	
+	public void setVampire(){
+		this.vampire = true;
+	}
+	
+	public void removeVampire() {
+		this.vampire = false;
 	}
 	
 	public String getName() {

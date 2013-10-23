@@ -12,24 +12,15 @@ public class Dracula implements dracula.Dracula {
 	// Turn-based state.
 	private Location location;
 	private int health;
-	private int status;
-	
-	/* TODO  Do we really need so many states??
-	public String events;
-	public String action;
-	public boolean hidden;
-	boolean doubleBack;
-	boolean castle;
-	int doubleBackLast;
-	int hiddenLast;
-*/
+	private int doubleBack;
+	private int hidden;
+	private String draculaMoveAction;
 
 	
 	public Dracula () {
-		this.status = 1;
 		this.health = 40;
-//		this.doubleBackLast = 0;
-//		this.hiddenLast = 0;
+		this.doubleBack = 0;
+		this.hidden = 0;
 	}
 	
 	/**
@@ -91,7 +82,9 @@ public class Dracula implements dracula.Dracula {
 	 * @return	true if Dracula can make a HIDE move, false otherwise.
 	 */
 	private boolean canHide() {
-		return false;
+		if (this.hidden > 0)
+			return false;
+		return true;
 	}
 	
 	/**
@@ -101,96 +94,78 @@ public class Dracula implements dracula.Dracula {
 	 * 
 	 * "Double backs can refer to Hide moves, or cities."
 	 * 
-	 * "D1 if u are doubling back to ur current location, D2 if you are going back one city etc."
+	 * "D1 if u are doubling back to current location, D2 if you are going back one city etc."
 	 * @see https://www.openlearning.com/unsw/courses/COMP9024/Pages/TheFuryOfDracula?inCohort=unsw/courses/COMP9024/Cohorts/2013Semester2#comment-525f751a78f2f2083f980853
 	 * 
 	 * @return	true if can make a double back move, false otherwise.
 	 */
 	private boolean canDoubleBack() {
+		if (this.doubleBack > 0)
+			return false;
+		return true;
+	}
+	
+	//Needs to be in DraculaMove?
+	private boolean canSetVampire() {
+		if (game.getRound() > 0 && game.getRound() % 13 == 0)
+			return true;
 		return false;
 	}
 	
 	private boolean canTeleport() {
-		return false;
+		/*
+		 * Cannot doubleBack
+		 * Cannot move via sea as health < 3
+		 * Cannot move to any point on trail
+		 * ????
+		*/
+		if (doubleBack > 0 || hidden > 0 || health < 3)
+			return false;
+		return true;
 	}
 	
 	
 	public void update(String newMove) {
-		
-//		this.events = Gamedata.move.events.substring(0,2);
-//		this.action = Gamedata.move.events.substring(2,3);
-		
 		this.updateLocation();
 		this.updateActions();
 	}
 	
 	private void updateLocation() {
-		/*
-		this.location = Gamedata.move.location;
-		//DoubleBack
-		// TODO digits
-		if (this.location.contains("D")) {
-			doubleBackLast = 6;
-			doubleBack = true;
-		} else {
-			doubleBack = false;
-		}
+		if (doubleBack > 0)
+			doubleBack--;
+		if (hidden > 0)
+			hidden--;
+		
+		//doubleBack
+		if (this.location.getName().contains("D"))
+			doubleBack = 6;
 		//Hide move
-		if (this.location.contains("HI")) {
-			hidden = true;
-			hiddenLast = 6;
-		} else {
-			hidden = false;
-		}
+		if (this.location.getName().contains("HI"))
+			hidden = 6;
 		//Sea travel
-		if (this.location.contains("Sea")) {
-			//this.setHealth(-2);
-		}
-		
-		//Teleport
-		// TODO health increases
-		if (this.location.contains("TP") || this.location.contains("CD")) {
-			castle = true;
+		if (this.location.getName().contains("Sea")) // TODO fetch the sea map location names
+			this.setHealth(-2);
+		//Teleport to or already in Castle Dracula
+		if (this.location.getName().contains("TP") || this.location.getName().contains("CD"))
 			this.setHealth(10);
-		} 
-		
-		if (doubleBackLast > 0) {
-			doubleBackLast--;
-		}
-		if (hiddenLast > 0) {
-			hiddenLast--;
-		}
-		*/
 	}
 		
 	private void updateActions() {
-
-		/*
-		//Events - setting traps or vampires
-		if (events.contains("T")) {
-			//Set a trap
-			if (Gamedata.MapData.get(this.location) == null) {
-				LocationData loc = new LocationData(this.location, "Town"); //Town, Port, Sea, Home
-				loc.setTrap();
-				Gamedata.MapData.put(this.location, loc);
-			} else {
-				Gamedata.MapData.get(this.location).setTrap();
-			}
+		if (this.draculaMoveAction.contains("T")) {
+			this.location.setTrap();
 		}
-		if (events.contains("V")) {
-			if (Gamedata.MapData.get(this.location) == null) {
-				LocationData loc = new LocationData(this.location, "Town");
-				loc.vampire = true;
-				Gamedata.MapData.put(this.location, loc);
-			} else {
-				Gamedata.MapData.get(this.location).vampire = true;
-			}
-			Gamedata.vampire = this.location;
+		if (this.draculaMoveAction.contains("V")) {
+			game.setVampire();
+			this.location.setVampire();
 		}
 		
+		/*
+		 * I don't think we need to do these as they are tracked by the game?
+		 * All we need to do is update the old location with the new location
+		 * in the dracula trail
+		 * 
 		//Dracula's Actions
 		if (action.contains("V")) {
-			// TODO score update
 			//Get the vampire location and clear it from map data
 			if (Gamedata.MapData.get(Gamedata.vampire).traps == 0) {
 				Gamedata.MapData.remove(Gamedata.vampire);
@@ -208,13 +183,11 @@ public class Dracula implements dracula.Dracula {
 		*/
 	}
 
-	private void setHealth(int amount) {
+	public void setHealth(int amount) {
 		this.health += amount;
 		//Draculas health is permitted to go beyond 40
 		if (this.health < 1) {
-			// TODO status
-			this.status = 0; //status 0 which will force a move back to hospital
-			this.health = 0;
+			this.health = 0; //Game over, man.
 		}
 	}
 }

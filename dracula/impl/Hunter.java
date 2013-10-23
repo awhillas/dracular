@@ -69,45 +69,35 @@ public class Hunter {
 		
 		// Encountered Dracula.
 		if (encounters.substring(0).contains("D")) {
-			this.encounteredDracula = true;
-			this.setHealth(-4);
 			game.onHunterEncounter(this, game.HE_ENCOUNTERD_DRACULA);
 		}
 		
 		// Vampire is discovered
 		if (encounters.substring(0).contains("V")) {
+			this.location.removeVampire();
 			game.onHunterEncounter(this, game.HE_ENCOUNTERD_VAMPIRE);
 		}
 		
 		// Traps are in sequence or a single trap
-		if (encounters.substring(0).contains("TT")) { 
-			this.encounteredTrap = 2;
-			this.setHealth(-4); 
+		if (encounters.substring(0).contains("TT")) {
+			this.location.removeTrap();
+			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP);
+			this.location.removeTrap();
 			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP);
 		} 
 		else if (encounters.substring(0).contains("T")) {
-			this.encounteredTrap = 1;
-			this.setHealth(-2); 
-			// TODO GameData.MapData.get(this.location).removeTrap();
+			this.location.removeTrap();
+			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP); 
 		}
-		
-		/* TODO
-		//Location is empty, remove it
-		if (GameData.MapData.get(this.location) != null) {
-			if (GameData.MapData.get(this.location).traps == 0 && !GameData.MapData.get(this.location).vampire) {
-				GameData.MapData.remove(this.location);
-			}
-		}
-		*/
 	}
 	
-	private void setHealth(int amount) {
+	/* 
+	 * Hunter is automatically teleported to hospital if it drops below 1
+	 * Otherwise it is limited to 9
+	 */
+	public void setHealth(int amount) {
 		this.health += amount;
-		if (this.health > 9) {
+		if (this.health > 9 || this.health < 1) 
 			this.health = 9;
-		} else if (this.health < 1) {
-			this.status = 0; //status 0 which will force a move back to hospital
-			this.health = 0;
-		}
 	}
 }
