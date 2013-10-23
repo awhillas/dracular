@@ -15,10 +15,11 @@ public class Dracula implements dracula.Dracula {
 	private int doubleBack;
 	private int hidden;
 	private String draculaMoveAction;
-
+	private List<Location> trail;
 	
 	public Dracula () {
-		this.health = 40;
+		
+ 		this.health = 40;
 		this.doubleBack = 0;
 		this.hidden = 0;
 	}
@@ -124,30 +125,48 @@ public class Dracula implements dracula.Dracula {
 		return true;
 	}
 	
-	
-	public void update(String newMove) {
-		this.updateLocation();
-		this.updateActions();
+	public List<Location> getTrail() {
+		return this.trail;
 	}
 	
-	private void updateLocation() {
+	public void update(String newMove) {
+		
 		if (doubleBack > 0)
 			doubleBack--;
 		if (hidden > 0)
 			hidden--;
 		
-		//doubleBack
-		if (this.location.getName().contains("D"))
-			doubleBack = 6;
-		//Hide move
-		if (this.location.getName().contains("HI"))
+		this.updateLocation();
+		this.updateActions();
+		this.updateTrail();
+	}
+	
+	public void doubleBackTo(int positionInTrail) {
+		if (doubleBack == 0 ) {
+			this.doubleBack = 6;
+			//this.newAILocation = this.trail.get(positionInTrail);
+		}
+	}
+	
+	public void hideMove() {
+		if (hidden == 0)
 			hidden = 6;
+	}
+	
+	private void updateLocation() {
+		//this.location = this.newAILocation decision from AI
+
 		//Sea travel
-		if (this.location.getName().contains("Sea")) // TODO fetch the sea map location names
+		if (this.location.getName().contains((CharSequence) EnumSet.of(TravelBy.sea))) // TODO fetch the sea map location names
 			this.setHealth(-2);
 		//Teleport to or already in Castle Dracula
 		if (this.location.getName().contains("TP") || this.location.getName().contains("CD"))
 			this.setHealth(10);
+	}
+	
+	private void updateTrail() {
+		this.trail.add(this.location);
+		this.trail.remove(0);
 	}
 		
 	private void updateActions() {
@@ -158,6 +177,8 @@ public class Dracula implements dracula.Dracula {
 			game.setVampire();
 			this.location.setVampire();
 		}
+		
+		
 		
 		/*
 		 * I don't think we need to do these as they are tracked by the game?
