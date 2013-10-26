@@ -25,13 +25,13 @@ public class Game {
 		score = 366;		
 		
 		// Players.
-		dracula = new Dracula();
+		dracula = new Dracula(this);
 		
 		hunters = new HashMap<String, Hunter>();
-		hunters.put("G", new Hunter(this, "Lord Godalming"));
-		hunters.put("S", new Hunter(this, "Dr Seward"));
-		hunters.put("H", new Hunter(this, "Van Helsing"));
-		hunters.put("M", new Hunter(this, "Mina Harker"));
+		hunters.put("G", new Hunter(this, "Lord Godalming", 1));
+		hunters.put("S", new Hunter(this, "Dr Seward", 2));
+		hunters.put("H", new Hunter(this, "Van Helsing", 3));
+		hunters.put("M", new Hunter(this, "Mina Harker", 4));
 	}
 	
 	public Dracula getDracula() {
@@ -41,6 +41,10 @@ public class Game {
 	public Map getMap()
 	{
 		return this.map;
+	}
+	
+	public HashMap<String, Hunter> getHunters() {
+		return this.hunters;
 	}
 	
 	public void update(String pastPlays, String[] messages) {
@@ -103,6 +107,10 @@ public class Game {
 		if (hunterEncounterCode == this.HE_ENCOUNTERD_TRAP) 
 			hunter.setHealth(-2);
 			//this.score -= 
+	}
+	
+	public int getScore() {
+		return this.score;
 	}
 	
 	public int getRound() {

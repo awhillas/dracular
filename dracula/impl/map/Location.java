@@ -12,7 +12,7 @@ public class Location {
 	}
 	
 	public void setTrap() {
-		if (numOfTraps < 3){
+		if (numOfTraps < 2){
 			this.numOfTraps++;
 		}
 	}
@@ -21,6 +21,21 @@ public class Location {
 		if (numOfTraps > 0) {
 			this.numOfTraps--;
 		}
+	}
+	
+	public String getLocationEncounters() {
+		String actions = "";
+		if (this.numOfTraps == 1) {
+			actions = "T.";
+		} else if (this.numOfTraps == 2) {
+			actions = "TT";
+		}
+		if (vampire) {
+			actions += "V";
+		} else {
+			actions += ".";
+		}
+		return actions;
 	}
 	
 	public void setVampire(){

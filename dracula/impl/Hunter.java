@@ -7,23 +7,19 @@ public class Hunter {
 	// Core state.
 	private String name;
 	private Game game;
-
+	private int number;
 	
 	// Turn-based state.
 	private Location location;
 	private int health;	
-	private int status;
 	private boolean isInHospital;
 	public String encounters;
-	private int encounteredTrap;
-	private boolean encounteredDracula;
 	
-	public Hunter(Game game, String name) {
+	public Hunter(Game game, String name, int num) {
 		this.game = game;
 		this.name = name;
-		
+		this.number = num;
 		this.health = 9;
-		this.status = 1;
 	}
 
 	public void update(String newMove) throws Exception {
@@ -91,6 +87,22 @@ public class Hunter {
 		}
 	}
 	
+	public Location getLocation() {
+		return this.location;
+	}
+	
+	public int getNumber() {
+		return this.number;
+	}
+	
+	public String getHunter() {
+		return this.name;
+	}
+	
+	public int getHealth() {
+		return this.health;
+	}
+ 	
 	/* 
 	 * Hunter is automatically teleported to hospital if it drops below 1
 	 * Otherwise it is limited to 9

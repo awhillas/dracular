@@ -17,8 +17,8 @@ public class Dracula implements dracula.Dracula {
 	private String draculaMoveAction;
 	private List<Location> trail;
 	
-	public Dracula () {
-		
+	public Dracula (Game game) {
+		this.game = game;
  		this.health = 40;
 		this.doubleBack = 0;
 		this.hidden = 0;
@@ -155,9 +155,9 @@ public class Dracula implements dracula.Dracula {
 	
 	private void updateLocation() {
 		//this.location = this.newAILocation decision from AI
-
+		
 		//Sea travel
-		if (this.location.getName().contains((CharSequence) EnumSet.of(TravelBy.sea))) // TODO fetch the sea map location names
+		if (game.getMap().isAtSea(this.location))
 			this.setHealth(-2);
 		//Teleport to or already in Castle Dracula
 		if (this.location.getName().contains("TP") || this.location.getName().contains("CD"))
@@ -177,8 +177,6 @@ public class Dracula implements dracula.Dracula {
 			game.setVampire();
 			this.location.setVampire();
 		}
-		
-		
 		
 		/*
 		 * I don't think we need to do these as they are tracked by the game?
@@ -202,6 +200,14 @@ public class Dracula implements dracula.Dracula {
 		}
 		
 		*/
+	}
+	
+	public Location getLocation() {
+		return this.location;
+	}
+	
+	public int getHealth() {
+		return this.health;
 	}
 
 	public void setHealth(int amount) {
