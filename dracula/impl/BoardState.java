@@ -27,12 +27,8 @@ public interface BoardState {
     public Move[] getLegalMoves();
     
     /*
-     * returns array of current hunter locations
+     * returns array of current min dist between drac and hunters (from adjacency matrix)
+     * need a way of including sea and land based moves into same distance calc 
      */
-    public String[] getHunterLocations();
-    
-    /*
-     * returns dracula location
-     */
-    public String getDracLocation();
+    public int[] getHunterDistances();
 }
