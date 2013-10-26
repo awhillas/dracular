@@ -25,4 +25,14 @@ public interface BoardState {
      * Returns a list of legal moves for Dracula to make in current board state
      */
     public Move[] getLegalMoves();
+    
+    /*
+     * returns array of current hunter locations
+     */
+    public String[] getHunterLocations();
+    
+    /*
+     * returns dracula location
+     */
+    public String getDracLocation();
 }
