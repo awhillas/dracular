@@ -15,7 +15,8 @@ public class Hunter {
 	private boolean isInHospital;
 	public String encounters;
 	
-	public Hunter(Game game, String name, int num) {
+	public Hunter(Game game, String name, int num, Location loc) {
+		this.location = loc;
 		this.game = game;
 		this.name = name;
 		this.number = num;
@@ -24,18 +25,20 @@ public class Hunter {
 
 	public void update(String newMove) throws Exception {
 		String name = newMove.substring(0, 1);
-		if (!name.equals(this.name))
+		if (!name.contains(this.name))
 			throw new Exception(String.format("Trying to update move data %s for the wrong hunter %s", newMove, this.name));
 		
-		String newLocation = newMove.substring(1, 2);
-		if (this.location.getName().equals(newLocation))
-			throw new Exception(String.format("Trying to update move data %s for the same location %s", newMove, this.location));
+		String newLocation = newMove.substring(1, 3);
 		
-		// Location.
+//		if (!location.getName().contains(newLocation))
+//			throw new Exception(String.format("Trying to update move data %s for the same location %s", newMove, this.location));
+//		
+//		// Location.
 		updateLocation(newLocation);
 		
 		// Encounters.
 		String encounterString = newMove.substring(3);
+		
 		updateEncounters(encounterString);
 	}
 	
@@ -44,14 +47,12 @@ public class Hunter {
 		 * If the Hunter is in the same city or sea they were in last turn 
 		 * he/she gains 3 life points (subject to a maximum of 9 points) 
 		 * (ie they are resting/researching/recovering from combat)
-		 
-		if (this.location == GameData.move.location) {
+		 */
+		if (this.location.getName() == newLocation) {
 			this.setHealth(3);
 		} else {
-			this.location = GameData.move.location;
+			this.location = new Location(newLocation);
 		}
-		*/
-		
 		// Hospital
 		if (this.location == game.getMap().getHospital()) {
 			isInHospital = true;

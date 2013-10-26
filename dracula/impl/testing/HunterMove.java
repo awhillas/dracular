@@ -8,7 +8,11 @@ import java.util.Random;
 import dracula.impl.Game;
 import dracula.impl.Hunter;
 import dracula.impl.TravelBy;
+import dracula.impl.ai.PathFinder;
+import dracula.impl.map.AdjacencyMatrix;
+import dracula.impl.map.GameMap;
 import dracula.impl.map.Location;
+import dracula.impl.map.Map;
 
 public class HunterMove {
 	private Game game;
@@ -24,37 +28,54 @@ public class HunterMove {
 		
 	}
 	
-	public int legalByRail() {
+	public List<Location> legalByRail() {
 		int sum = hunter.getNumber()+game.getRound();
-		if (sum % 4 == 0) {
-			return 0;
-		} else if (sum % 4 == 1) {
-			return 1;
+		List<Location> optionTrainLocs = new ArrayList<Location>();
+		if (sum % 4 == 1) {
+			//level 1
+			optionTrainLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
 		} else if (sum % 4 == 2) {
-			return 2;
+			//level 1
+			optionTrainLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
+			//level 2
+			for (Location loc : optionTrainLocs) {
+				optionTrainLocs.addAll(game.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
+			}
 		} else if (sum % 4 == 3) {
-			return 3;
+			//level 1
+			optionTrainLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
+			//level 2
+			for (Location loc : optionTrainLocs) {
+				optionTrainLocs.addAll(game.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
+			}
+			//level 3
+			for (Location loc : optionTrainLocs) {
+				optionTrainLocs.addAll(game.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
+			}
 		}
-		return 0;
+		return optionTrainLocs;
 	}
 	
 	public String hunterMove() {
 		
-		List<Location> optionLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea, TravelBy.rail));
+		List<Location> optionLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
+		optionLocs.addAll(legalByRail());
 		
 		options = new ArrayList<String>();
-		
 		for (Location loc : optionLocs) {
 			options.add(loc.getName());
 		}
 		nonOptions = new ArrayList<String>();
 		
+		//Dracula Castle isn't allowed
 		nonOptions.add("CD");
 		String newLocation = "";
 		
+		/*
+		 * Build the hunters move, either random mover or via the pathfinder
+		 */
 		if (moveType.contains("SEARCH")) {
-			// TODO
-			newLocation = options.get(0);
+			newLocation = hunterSearchMove();
 		} else if (moveType.contains("RANDOM")) {
 			Random random = new Random();
 			newLocation = options.get(random.nextInt(options.size()));
@@ -69,19 +90,28 @@ public class HunterMove {
 		return hunter;
 	}
 	
+	public String hunterSearchMove() {
+        Map m = new GameMap();
+        ArrayList<String> path = m.getRoute(hunter.getLocation().getName(), 
+        		game.getDracula().getLocation().getName(), new ArrayList<String>(), TravelBy.road);
+        return path.get(0);
+	}
+	
 	public String getEncounters(String location) {
 		String actions = "....";
 		List<Location> trail = this.game.getDracula().getTrail();
 		int i = 0;
-		if (trail.get(i).getName().contains(location)) {
-			actions = trail.get(i).getLocationEncounters();
-			
+		if (!trail.isEmpty()) {
+			if (trail.get(i).getName().contains(location)) {
+				actions = trail.get(i).getLocationEncounters();
+			}
+			if (this.game.getDracula().getLocation().getName().contains(location)) {
+				actions += "D";
+			} else {
+				actions += ".";
+			}
 		}
-		if (this.game.getDracula().getLocation().getName().contains(location)) {
-			actions += "D";
-		} else {
-			actions += ".";
-		}
+		
 		return actions;
 	}
 	

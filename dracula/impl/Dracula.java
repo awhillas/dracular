@@ -18,6 +18,8 @@ public class Dracula implements dracula.Dracula {
 	private List<Location> trail;
 	
 	public Dracula (Game game) {
+		this.location = new Location("NOT SET");
+		this.trail = new ArrayList<Location>();
 		this.game = game;
  		this.health = 40;
 		this.doubleBack = 0;

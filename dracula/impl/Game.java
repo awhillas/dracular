@@ -15,7 +15,8 @@ public class Game {
 	private int vampireAliveInRounds;
 	// Players.
 	private Dracula dracula;
-	private HashMap<String, Hunter> hunters;
+	private HashMap<String, Hunter> hunters = new HashMap<String, Hunter>();
+	//private Hunter[] hunters;
 			
 	public Game() {
 		// Init.
@@ -23,15 +24,8 @@ public class Game {
 		turn = 0;
 		round = 0;
 		score = 366;		
-		
-		// Players.
+		// Players 
 		dracula = new Dracula(this);
-		
-		hunters = new HashMap<String, Hunter>();
-		hunters.put("G", new Hunter(this, "Lord Godalming", 1));
-		hunters.put("S", new Hunter(this, "Dr Seward", 2));
-		hunters.put("H", new Hunter(this, "Van Helsing", 3));
-		hunters.put("M", new Hunter(this, "Mina Harker", 4));
 	}
 	
 	public Dracula getDracula() {
@@ -68,8 +62,9 @@ public class Game {
 		// Only need to update the last move.
 		String[] moves = pastPlays.split(" ");
 		String newMove = moves[moves.length - 1];
-		
 		String name = newMove.substring(0, 1);
+		Location location = new Location(newMove.substring(1,3));
+		int hunterNum = 1;
 		try {
 			/* TODO
 			 * Do we ever need to look at the dracula play?
@@ -82,7 +77,12 @@ public class Game {
 				dracula.update(newMove);
 				//this.score -= 1;
 			} else {
-				hunters.get(name).update(newMove);
+				if (!hunters.containsKey(name)) {
+					hunters.put(name, new Hunter(this, name, hunterNum++, location));					
+				} else {
+					hunters.get(name).update(newMove);	
+				}
+					
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
