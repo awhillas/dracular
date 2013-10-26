@@ -18,8 +18,9 @@ public class Dracula implements dracula.Dracula {
 	private List<Location> trail;
 	
 	public Dracula (Game game) {
-		this.location = new Location("NOT SET");
 		this.trail = new ArrayList<Location>();
+		this.location = new Location("NOT SET");
+		this.draculaMoveAction = ".";
 		this.game = game;
  		this.health = 40;
 		this.doubleBack = 0;
@@ -131,7 +132,7 @@ public class Dracula implements dracula.Dracula {
 		return this.trail;
 	}
 	
-	public void update(String newMove) {
+	public void update() {
 		
 		if (doubleBack > 0)
 			doubleBack--;
@@ -156,7 +157,7 @@ public class Dracula implements dracula.Dracula {
 	}
 	
 	private void updateLocation() {
-		//this.location = this.newAILocation decision from AI
+		//this.location = AI location
 		
 		//Sea travel
 		if (game.getMap().isAtSea(this.location))
@@ -168,7 +169,8 @@ public class Dracula implements dracula.Dracula {
 	
 	private void updateTrail() {
 		this.trail.add(this.location);
-		this.trail.remove(0);
+		if (trail.size() > 6)
+			this.trail.remove(0);
 	}
 		
 	private void updateActions() {
@@ -176,7 +178,7 @@ public class Dracula implements dracula.Dracula {
 			this.location.setTrap();
 		}
 		if (this.draculaMoveAction.contains("V")) {
-			game.setVampire();
+			this.game.setVampire();
 			this.location.setVampire();
 		}
 		
@@ -206,6 +208,10 @@ public class Dracula implements dracula.Dracula {
 	
 	public Location getLocation() {
 		return this.location;
+	}
+	
+	public void setLocation(Location loc) {
+		this.location = loc;
 	}
 	
 	public int getHealth() {

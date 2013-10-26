@@ -63,6 +63,7 @@ public class TestGame {
 	
 	public void setupGame() {
 		Map m = new GameMap();
+		
 		//Madrid, London, Belgrade, Berlin
 		//MA, LO, BE, BR
 		this.game.update("GMA....", this.messages);
@@ -79,25 +80,33 @@ public class TestGame {
 		assert loc3.getName().contains("BE");
 		assert loc4.getName().contains("BR");
 		
-		this.game.update(HunterMover("G", "RANDOM"), this.messages);
-		this.game.update(HunterMover("S", "RANDOM"), this.messages);
-		
+		//Print round 0 Setup
 		printHunterStatus();
 		printDraculaStatus();
 		printGameStatus();
-		/*
+		
+		game.getDracula().setLocation(new Location("MR"));
+		game.getDracula().update();
+		
+		this.game.update(HunterMover("G", "RANDOM"), this.messages);
+		this.game.update(HunterMover("S", "RANDOM"), this.messages);
 		this.game.update(HunterMover("H", "SEARCH"), this.messages);
 		this.game.update(HunterMover("M", "SEARCH"), this.messages);
+		
 		
 		assert m.getAdjacentFor(hunters.get("G").getLocation(), EnumSet.of(TravelBy.road)).contains(loc1);
 		assert m.getAdjacentFor(hunters.get("S").getLocation(), EnumSet.of(TravelBy.road)).contains(loc2);
 		assert m.getAdjacentFor(hunters.get("H").getLocation(), EnumSet.of(TravelBy.road)).contains(loc3);
 		assert m.getAdjacentFor(hunters.get("M").getLocation(), EnumSet.of(TravelBy.road)).contains(loc4);
-
+		
 		for (String key : hunters.keySet()) {
 			assert hunters.get(key).getHealth() >= 0;
 		}
-		*/
+
+		//Print end of round 1
+		printHunterStatus();
+		printDraculaStatus();
+		printGameStatus();
 		
 	}
 	

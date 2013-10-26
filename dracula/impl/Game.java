@@ -16,7 +16,6 @@ public class Game {
 	// Players.
 	private Dracula dracula;
 	private HashMap<String, Hunter> hunters = new HashMap<String, Hunter>();
-	//private Hunter[] hunters;
 			
 	public Game() {
 		// Init.
@@ -61,28 +60,17 @@ public class Game {
 
 		// Only need to update the last move.
 		String[] moves = pastPlays.split(" ");
-		String newMove = moves[moves.length - 1];
-		String name = newMove.substring(0, 1);
-		Location location = new Location(newMove.substring(1,3));
+		String newMoveString = moves[moves.length - 1];
+		String name = newMoveString.substring(0, 1);
+		Location location = new Location(newMoveString.substring(1,3));
 		int hunterNum = 1;
 		try {
-			/* TODO
-			 * Do we ever need to look at the dracula play?
-			 * This should be run from the draculaMove
-			 * So once our Dracula has decided on its move for the turn
-			 * and executed the move, we then update the dracula with the new
-			 * information and release its playString back to the game
-			 */
-			if (name.toUpperCase().equals("D")) {
-				dracula.update(newMove);
-				//this.score -= 1;
+			
+			//dracula.update();
+			if (!hunters.containsKey(name)) {
+				hunters.put(name, new Hunter(this, name, hunterNum++, location));					
 			} else {
-				if (!hunters.containsKey(name)) {
-					hunters.put(name, new Hunter(this, name, hunterNum++, location));					
-				} else {
-					hunters.get(name).update(newMove);	
-				}
-					
+				hunters.get(name).update(newMoveString);	
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

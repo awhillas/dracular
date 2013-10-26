@@ -20,6 +20,7 @@ public class HunterMove {
 	private List<String> options;
 	private List<String> nonOptions;
 	private String moveType;
+	private String encounters;
 	
 	public HunterMove(Hunter hunter, String move, Game game) {
 		this.game = game;
@@ -59,7 +60,7 @@ public class HunterMove {
 	public String hunterMove() {
 		
 		List<Location> optionLocs = game.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
-		optionLocs.addAll(legalByRail());
+		//optionLocs.addAll(legalByRail());
 		
 		options = new ArrayList<String>();
 		for (Location loc : optionLocs) {
@@ -81,8 +82,8 @@ public class HunterMove {
 			newLocation = options.get(random.nextInt(options.size()));
 		}
 		
-		String actions = getEncounters(newLocation);
-		return hunter.getHunter()+newLocation+actions;
+		this.encounters = getEncounters(newLocation);
+		return hunter.getHunter()+newLocation+encounters;
 	}
 	
 
@@ -94,7 +95,7 @@ public class HunterMove {
         Map m = new GameMap();
         ArrayList<String> path = m.getRoute(hunter.getLocation().getName(), 
         		game.getDracula().getLocation().getName(), new ArrayList<String>(), TravelBy.road);
-        return path.get(0);
+        return path.get(1);
 	}
 	
 	public String getEncounters(String location) {
@@ -111,14 +112,20 @@ public class HunterMove {
 				actions += ".";
 			}
 		}
-		
 		return actions;
 	}
+	
+	public String Encounters() {
+		return this.encounters;
+	}
+	
 	
 	public String insults() {
 		String messages = "";
 		
 		return messages;
 	}
+	
+	
  	
 }
