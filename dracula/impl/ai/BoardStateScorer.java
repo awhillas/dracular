@@ -36,16 +36,41 @@ public class BoardStateScorer {
     /*
      * returns the score for the given boardState
      */
-    public static int getScore(BoardState bs) {
-        state = bs;
-        update();
-        return avHuntDist * hDWeight + dracHealth * dHWeight + avHuntHealth * hHWeight + availMoves * aMWeight + huntCollisions * hCWeight;
+//    public static int getScore(BoardState bs) {
+//        state = bs;
+//        update();
+//        return avHuntDist * hDWeight + dracHealth * dHWeight + avHuntHealth * hHWeight + availMoves * aMWeight + huntCollisions * hCWeight;
+//    }
+    
+    /**
+     * Calculate the weighted harmonic mean of the distances.
+     * Harmonic mean penalizes the average if dracula is too close to any of the hunters
+     * and is maximized when distances to all hunters are maximized. 
+     * However, if a hunter's health is low, even if dracula is very close to it, 
+     * it may still give a higher mean. 
+	 *
+     */
+    public static double getScore(BoardState state) {
+    	
+    	double sum = 0.0;
+    	for (int i = 0; i < state.getHunterDistances().length; i++) {
+    		// Distance.
+    		int d = state.getHunterDistances()[i];
+    		
+    		// Health.
+    		int h = state.getHunterHealth()[i];			// Assuming state.getHunterDistances() has the same sequence as state.getHunterHealth()
+    		
+    		sum += 1.0 / (d * h);
+    	}
+    	// Harmonic Mean.
+    	double mean = 4 / sum;
+    	return mean;
     }
 
     /*
      * updates the static fields of the BoardStateScorer
      */
-    private static void update() {
+     private static void update() {
         setAverageHunterDist();
         setAverageHunterHealth();
         dracHealth = state.getDracHealth();
