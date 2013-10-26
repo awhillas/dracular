@@ -63,7 +63,7 @@ public class BoardStateScorer {
     		sum += 1.0 / (d * h);
     	}
     	// Harmonic Mean.
-    	double mean = 4 / sum;
+    	double mean = ((double)state.getHunterDistances().length) / sum;
     	return mean;
     }
 
