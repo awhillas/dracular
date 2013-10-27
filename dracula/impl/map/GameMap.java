@@ -14,63 +14,66 @@ import dracula.impl.ai.PathFinder;
  * 
  */
 public class GameMap implements Map {
+	
+	public static final String HOSPITAL = "JM";
+	public static final String CASTLE = "CD";
 
-	private List<String> inlandLocations = new ArrayList<String>();
-	private List<String> portLocations = new ArrayList<String>();
-	private List<String> seaLocations = new ArrayList<String>();
+	private List<String> inlandStrings = new ArrayList<String>();
+	private List<String> portStrings = new ArrayList<String>();
+	private List<String> seaStrings = new ArrayList<String>();
 	
 	private AdjacencyMatrix roads;
 	private AdjacencyMatrix rails;
 	private AdjacencyMatrix seaRoutes;
 	
-	private List<Location> allLocations = new ArrayList<Location>();
-	private Location hospital;
-	private Location castle;
+	private List<String> allStrings = new ArrayList<String>();
+	private String hospital;
+	private String castle;
 	
 	// Mixed land and sea, for quick lookup
 	private HashMap<String, String> locationToCodes = new HashMap<String, String>();
 	
 	public GameMap() {
-		// Location Codes.
-		loadLocationCodes(GameMapStrings.inlandCities(), this.inlandLocations);
-		loadLocationCodes(GameMapStrings.portCities(), this.portLocations);
-		loadLocationCodes(GameMapStrings.seas(), this.seaLocations);
+		// String Codes.
+		loadStringCodes(GameMapStrings.inlandCities(), this.inlandStrings);
+		loadStringCodes(GameMapStrings.portCities(), this.portStrings);
+		loadStringCodes(GameMapStrings.seas(), this.seaStrings);
 		
 		// Load Land Maps.
-		String[] nodes = new String[inlandLocations.size() + portLocations.size()];
-		List<String> combinedLocations = new ArrayList<String>();
-		combinedLocations.addAll(inlandLocations);
-		combinedLocations.addAll(portLocations);
-		combinedLocations.toArray(nodes);
+		String[] nodes = new String[inlandStrings.size() + portStrings.size()];
+		List<String> combinedStrings = new ArrayList<String>();
+		combinedStrings.addAll(inlandStrings);
+		combinedStrings.addAll(portStrings);
+		combinedStrings.toArray(nodes);
 		
-		this.roads = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.roadMap(), combinedLocations));
-		this.rails = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.railMap(), combinedLocations));
+		this.roads = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.roadMap(), combinedStrings));
+		this.rails = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.railMap(), combinedStrings));
 		
 		// Load Sea Map.
-		nodes = new String[seaLocations.size() + portLocations.size()];
-		combinedLocations = new ArrayList<String>();
-		combinedLocations.addAll(portLocations);
-		combinedLocations.addAll(seaLocations);
+		nodes = new String[seaStrings.size() + portStrings.size()];
+		combinedStrings = new ArrayList<String>();
+		combinedStrings.addAll(portStrings);
+		combinedStrings.addAll(seaStrings);
 		
-		combinedLocations.toArray(nodes);
+		combinedStrings.toArray(nodes);
 		
-		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedLocations));
+		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedStrings));
 		
-		// Create a list of Locations.
-		combinedLocations.addAll(inlandLocations);
-		for (String s : combinedLocations) {
-			Location loc = new Location(s);
+		// Create a list of Strings.
+		combinedStrings.addAll(inlandStrings);
+		for (String s : combinedStrings) {
+			String loc = new String(s);
 			
 			if (s.equals("JM"))
 				this.hospital = loc;
 			if (s.equals("CD"))
 				this.castle = loc;
 			
-			allLocations.add(loc);
+			allStrings.add(loc);
 		}
 	}
 	
-	private void loadLocationCodes(List<String> locationStrings, List<String> codeList) {
+	private void loadStringCodes(List<String> locationStrings, List<String> codeList) {
 		for (String line : locationStrings) {
 			// process line.  e.g. || AL || Alicante ||
 			String[] parts = line.split("\\|\\|");
@@ -84,8 +87,8 @@ public class GameMap implements Map {
 		}
 	}
 
-	private int[][] loadMap(List<String> mapLines, List<String> combinedLocations) {
-		int size = combinedLocations.size();
+	private int[][] loadMap(List<String> mapLines, List<String> combinedStrings) {
+		int size = combinedStrings.size();
 		int[][] matrix = new int[size][size];
 		
 		for (String line : mapLines) {
@@ -95,8 +98,8 @@ public class GameMap implements Map {
 			String loc2 = parts[1].trim();
 			
 			// Get index of location code.
-			int idx1 = combinedLocations.indexOf(locationToCodes.get(loc1));
-			int idx2 = combinedLocations.indexOf(locationToCodes.get(loc2));
+			int idx1 = combinedStrings.indexOf(locationToCodes.get(loc1));
+			int idx2 = combinedStrings.indexOf(locationToCodes.get(loc2));
 
 			// Update matrix.
 			matrix[idx1][idx2] = matrix[idx2][idx1] = 1;
@@ -105,22 +108,22 @@ public class GameMap implements Map {
 	}
 
 	@Override
-	public List<Location> getAdjacentFor(Location location, EnumSet<TravelBy> by) {
+	public List<String> getAdjacentFor(String location, EnumSet<TravelBy> by) {
 		List<String> adjacencies = new ArrayList<String>();
 		if (by.contains(TravelBy.road)) {
-			adjacencies.addAll(Arrays.asList(this.roads.adjacentVertices(location.getName())));
+			adjacencies.addAll(Arrays.asList(this.roads.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.rail)) {
-			adjacencies.addAll(Arrays.asList(this.rails.adjacentVertices(location.getName())));
+			adjacencies.addAll(Arrays.asList(this.rails.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.sea)) {
-			adjacencies.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location.getName())));
+			adjacencies.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location)));
 		}
 		
-		List<Location> result = new ArrayList<Location>();
+		List<String> result = new ArrayList<String>();
 		for (String l : adjacencies) {
-			for (Location loc : allLocations) {
-				if (loc.getName().equals(l)) {
+			for (String loc : allStrings) {
+				if (loc.equals(l)) {
 					result.add(loc);
 					break;
 				}
@@ -130,17 +133,22 @@ public class GameMap implements Map {
 	}
 
 	@Override
-	public boolean isAtSea(Location loc) {
-		return this.seaLocations.contains(loc.getName());
+	public boolean isAtSea(String loc) {
+		return this.seaStrings.contains(loc);
 	}
+
+	@Override
+	public boolean isCity(String loc) {
+		return !this.isAtSea(loc);
+	}	
 	
 	@Override
-	public Location getHospital() {
+	public String getHospital() {
 		return this.hospital;
 	}
 
 	@Override
-	public Location getCastle() {
+	public String getCastle() {
 		return this.castle;
 	}
 	

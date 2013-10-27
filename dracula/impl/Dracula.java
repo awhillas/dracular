@@ -1,90 +1,43 @@
 package dracula.impl;
 
-import java.util.*;
-import dracula.DraculaMove;
-import dracula.impl.map.Location;
+import dracula.Encounter;
+import dracula.Player;
 
-public class Dracula implements dracula.Dracula {
-	
-	// Core state.
-	private Game game;
+/**
+ * This just represents the Dracula piece on the board and all the data 
+ * associated with that.
+ * 
+ * It is NOT the AI for Dracula and so does not figure out which move to make, 
+ * see the Game class for that.
+ * 
+ * @author alex
+ */
+public class Dracula implements Player {
 	
 	// Turn-based state.
-	private Location location;
-	private int health;
-	private int doubleBack;
-	private int hidden;
-	private String draculaMoveAction;
-	private List<Location> trail;
+	private String location;
+	private int blood_points;
+	private DraculaTrail trail;
 	
 	public Dracula () {
-		
- 		this.health = 40;
-		this.doubleBack = 0;
-		this.hidden = 0;
-	}
-	
-	/**
-	 * This is where the AI comes in.
-	 * 
-	 * "Clarification: The getPlayAsString method in Dracula Move should return 
-	 * a string of length 2, being the location that Dracula wants to move to."
-	 * @see https://www.openlearning.com/unsw/courses/COMP9024/Pages/TheFuryOfDracula
-	 * 
-	 * @see dracula.Dracula#decideMove()
-	 */
-	@Override
-	public DraculaMove decideMove() {
-		
-		List<Location> optionLocs = game.getMap().getAdjacentFor(this.location, EnumSet.of(TravelBy.road, TravelBy.sea));
-		
-		List<String> options = new ArrayList<String>();
-		for (Location loc : optionLocs) {
-			options.add(loc.getName());
-		}
-		//List<String> nonOptions = 
-		
-		// Replace this with something more intelligent.
-		// Perhaps start by eliminating cites with Hunters
-		// if all have hunters can we hide or backtrack?
-		// If all roads blocked take the sea?
-		// If we have to move to a city with a hunter then choose the weakest one.
-		// If all the same choose route back to Castle.
-		// etc...
-		// Else if no hunters choose square farthest away from hunters.
-		
-		if (canHide()) {
-			options.add("HI");
-		}
-		if (this.canDoubleBack()) {
-			options.add("D1");
-			options.add("D2");
-			options.add("D3");
-			options.add("D4");
-			options.add("D5");
-		}
-		if (this.canTeleport()) {
-			options.add("TP");
-		}
-		
-		Random random = new Random();
-		int next = random.nextInt(options.size());
-		
-		return new Move(options.get(next));
+ 		this.blood_points = 40;
+ 		this.trail = new DraculaTrail();
+ 		this.location = "";
 	}
 	
 	/**
 	 * "Dracula may make a HIDE move and remain in the city he is currently in for a 
-	 * second turn.   He cannot HIDE at sea. Dracula can only have one HIDE move 
+	 * second turn. He cannot HIDE at sea. Dracula can only have one HIDE move 
 	 * in his trail at any time."
 	 * 
 	 * "Hide moves can refer to Double back moves or cities."
 	 * 
 	 * @return	true if Dracula can make a HIDE move, false otherwise.
 	 */
-	private boolean canHide() {
-		if (this.hidden > 0)
+	public boolean canHide() {
+		if(trail.hasHidden()) {
 			return false;
+		}
 		return true;
 	}
 	
@@ -96,119 +49,89 @@ public class Dracula implements dracula.Dracula {
 	 * "Double backs can refer to Hide moves, or cities."
 	 * 
 	 * "D1 if u are doubling back to current location, D2 if you are going back one city etc."
-	 * @see https://www.openlearning.com/unsw/courses/COMP9024/Pages/TheFuryOfDracula?inCohort=unsw/courses/COMP9024/Cohorts/2013Semester2#comment-525f751a78f2f2083f980853
 	 * 
 	 * @return	true if can make a double back move, false otherwise.
 	 */
-	private boolean canDoubleBack() {
-		if (this.doubleBack > 0)
+	public boolean canDoubleBack() {
+		if (trail.hasDoubleBack())
 			return false;
 		return true;
 	}
 	
-	//Needs to be in DraculaMove?
-	private boolean canSetVampire() {
-		if (game.getRound() > 0 && game.getRound() % 13 == 0)
-			return true;
-		return false;
-	}
-	
-	private boolean canTeleport() {
+	public boolean canTeleport() {
 		/*
 		 * Cannot doubleBack
 		 * Cannot move via sea as health < 3
 		 * Cannot move to any point on trail
 		 * ????
 		*/
-		if (doubleBack > 0 || hidden > 0 || health < 3)
+		if (!canDoubleBack() || !canHide() || blood_points < 3)
 			return false;
 		return true;
 	}
 	
-	public List<Location> getTrail() {
+	public DraculaTrail getTrail() {
 		return this.trail;
 	}
-	
-	public void update(String newMove) {
-		
-		if (doubleBack > 0)
-			doubleBack--;
-		if (hidden > 0)
-			hidden--;
-		
-		this.updateLocation();
-		this.updateActions();
-		this.updateTrail();
-	}
-	
-	public void doubleBackTo(int positionInTrail) {
-		if (doubleBack == 0 ) {
-			this.doubleBack = 6;
-			//this.newAILocation = this.trail.get(positionInTrail);
-		}
-	}
-	
-	public void hideMove() {
-		if (hidden == 0)
-			hidden = 6;
-	}
-	
-	private void updateLocation() {
-		//this.location = this.newAILocation decision from AI
 
-		//Sea travel
-		if (this.location.getName().contains((CharSequence) EnumSet.of(TravelBy.sea))) // TODO fetch the sea map location names
-			this.setHealth(-2);
-		//Teleport to or already in Castle Dracula
-		if (this.location.getName().contains("TP") || this.location.getName().contains("CD"))
-			this.setHealth(10);
-	}
-	
-	private void updateTrail() {
-		this.trail.add(this.location);
-		this.trail.remove(0);
-	}
-		
-	private void updateActions() {
-		if (this.draculaMoveAction.contains("T")) {
-			this.location.setTrap();
-		}
-		if (this.draculaMoveAction.contains("V")) {
-			game.setVampire();
-			this.location.setVampire();
-		}
-		
-		
-		
-		/*
-		 * I don't think we need to do these as they are tracked by the game?
-		 * All we need to do is update the old location with the new location
-		 * in the dracula trail
-		 * 
-		//Dracula's Actions
-		if (action.contains("V")) {
-			//Get the vampire location and clear it from map data
-			if (Gamedata.MapData.get(Gamedata.vampire).traps == 0) {
-				Gamedata.MapData.remove(Gamedata.vampire);
-			} else {
-				Gamedata.MapData.get(Gamedata.vampire).vampire = false;
-			}
-			//Gamedata.vampire = "";
-		}
-		if (action.contains("M")) {
-			//Get the trap from the queue and clear it from map data - 
-			String trap = Gamedata.DraculaTrail[(Gamedata.round-5) % 6].location;
-			Gamedata.MapData.get(trap).removeTrap();
-		}
-		
-		*/
-	}
-
-	public void setHealth(int amount) {
-		this.health += amount;
+	@Override
+	public void addToHealth(int amount) {
+		this.blood_points += amount;
 		//Draculas health is permitted to go beyond 40
-		if (this.health < 1) {
-			this.health = 0; //Game over, man.
+		if (this.blood_points < 1) {
+			this.blood_points = 0; //Board over, man.
 		}
+	}
+
+	@Override
+	public void parsePastPlay(String pastPlay, Board board) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Translate a move into a location on the map.
+	 * "Dracula leaves a Trap/Vampire as soon as he enters a city, NOT when he 
+	 * leaves the city."
+	 * 
+	 * @param	move	2-letter move String, either a city or Dn (Double-back n-moves), 
+	 * 		HI (hide) or TP (teleport to Castle Dracula).
+	 */
+	@Override
+	public void makeMove(Move move, Board board) {
+		this.trail.addMove(move, this.getNewNasty(board));
+		
+	}
+
+	/**
+	 * "Dracula places an immature Vampire if he is in a city AND if the round 
+	 * whose number is divisible by 13"
+	 * 
+	 * @param 	board current board state.
+	 * @return	a new Encounter i.e. Trap or Vampire
+	 */
+	private Encounter getNewNasty(Board board) {
+		if (board.getMap().isCity(this.getLocation()) && board.getRound() % 13 == 0) {
+			return new Trap(this.location);
+		} else {
+			return new Vampire(this.location);
+		}
+	}
+	@Override
+	public int getHealth() {
+		return this.blood_points;
+	}
+
+	@Override
+	public String getLocation() {
+		return this.location;
+	}
+
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO simple test cases
 	}
 }

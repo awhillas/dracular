@@ -1,103 +1,115 @@
 package dracula.impl;
 
-import dracula.impl.map.Location;
+import dracula.impl.Board;
+import dracula.impl.map.GameMap;
+import dracula.Encounter;
+import dracula.Player;
 
-public class Hunter {
+public class Hunter implements Player {
 	
 	// Core state.
 	private String name;
-	private Game game;
-
 	
 	// Turn-based state.
-	private Location location;
-	private int health;	
-	private int status;
-	private boolean isInHospital;
-	public String encounters;
-	private int encounteredTrap;
-	private boolean encounteredDracula;
+	private String location;	// Two letter code for location.
+	private int health;			
 	
-	public Hunter(Game game, String name) {
-		this.game = game;
+	public Hunter(String name) {
 		this.name = name;
-		
 		this.health = 9;
-		this.status = 1;
-	}
-
-	public void update(String newMove) throws Exception {
-		String name = newMove.substring(0, 1);
-		if (!name.equals(this.name))
-			throw new Exception(String.format("Trying to update move data %s for the wrong hunter %s", newMove, this.name));
-		
-		String newLocation = newMove.substring(1, 2);
-		if (this.location.getName().equals(newLocation))
-			throw new Exception(String.format("Trying to update move data %s for the same location %s", newMove, this.location));
-		
-		// Location.
-		updateLocation(newLocation);
-		
-		// Encounters.
-		String encounterString = newMove.substring(3);
-		updateEncounters(encounterString);
-	}
-	
-	private void updateLocation(String newLocation) {
-		/* TODO
-		 * If the Hunter is in the same city or sea they were in last turn 
-		 * he/she gains 3 life points (subject to a maximum of 9 points) 
-		 * (ie they are resting/researching/recovering from combat)
-		 
-		if (this.location == GameData.move.location) {
-			this.setHealth(3);
-		} else {
-			this.location = GameData.move.location;
-		}
-		*/
-		
-		// Hospital
-		if (this.location == game.getMap().getHospital()) {
-			isInHospital = true;
-			setHealth(9);
-		} else {
-			isInHospital = false;
-		}
-	}
-	
-	private void updateEncounters(String encounters) {
-		
-		// Encountered Dracula.
-		if (encounters.substring(0).contains("D")) {
-			game.onHunterEncounter(this, game.HE_ENCOUNTERD_DRACULA);
-		}
-		
-		// Vampire is discovered
-		if (encounters.substring(0).contains("V")) {
-			this.location.removeVampire();
-			game.onHunterEncounter(this, game.HE_ENCOUNTERD_VAMPIRE);
-		}
-		
-		// Traps are in sequence or a single trap
-		if (encounters.substring(0).contains("TT")) {
-			this.location.removeTrap();
-			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP);
-			this.location.removeTrap();
-			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP);
-		} 
-		else if (encounters.substring(0).contains("T")) {
-			this.location.removeTrap();
-			game.onHunterEncounter(this, game.HE_ENCOUNTERD_TRAP); 
-		}
 	}
 	
 	/* 
 	 * Hunter is automatically teleported to hospital if it drops below 1
 	 * Otherwise it is limited to 9
 	 */
-	public void setHealth(int amount) {
+	@Override
+	public void addToHealth(int amount) {
 		this.health += amount;
-		if (this.health > 9 || this.health < 1) 
+		if (this.health > 9) 
 			this.health = 9;
+	}
+	
+	@Override
+	public int getHealth() {
+		return this.health;
+	}
+	
+	/**
+	 */
+	@Override
+	public void parsePastPlay(String pastPlay, Board board) {
+		String newLocation = pastPlay.substring(1, 2);			// 2 uppercase characters representing the new location of the hunter. 
+		// 4 letters representing, in order, the encounters that occurred:
+		int traps = countOccurrences(pastPlay.substring(2, 6), 'T');	// one 'T' for each Trap encountered (and disarmed)
+		boolean vampire = pastPlay.substring(2, 6).contains("V");	// 'V' if an immature Vampire was encountered (and vanquished)
+		boolean dracula = pastPlay.substring(2, 6).contains("D");	// 'D' if, finally, Dracula was confronted
+		
+		this.makeMove(new Move(newLocation, newLocation), board);
+	}
+	
+	public static int countOccurrences(String haystack, char needle) {
+		int count = 0;
+		for (int i = 0; i < haystack.length(); i++) {
+			if (haystack.charAt(i) == needle) {
+				count++;
+			}
+		}
+		return count;
+	}	
+
+	/**
+	 * Move the hunter to the new location.
+	 * 
+	 * "Hunter encounters, in sequence, 
+	 * 1. all Traps for that city which are in the current trail, then 
+	 * 2. any immature Vampires, and then 
+	 * 3. at last confronts Dracula himself if he is also in that city, 
+	 * each of these events occurring in turn until either the Hunter is 
+	 * reduced to 0 or less life points or all the encounters have occurred."
+	 * 
+	 * @param move		2-letter String of new location.
+	 * @param board
+	 */
+	@Override
+	public void makeMove(Move move, Board board) {
+		this.location = move.getLocation();
+		DraculaTrail trail = board.getDracula().getTrail();
+		Encounter[] nasties = trail.getEncountersAt(location);
+		
+		// Traps, one by one in oldest to newest order
+		for (Encounter t : nasties) {
+			if(t.isTrap()) {
+				this.addToHealth(-Encounter.TRAP_COST);
+				trail.disarm(t);
+				if (this.getHealth() <= 0) {
+					this.location = GameMap.HOSPITAL;
+					return;
+				}
+			}
+		}
+		// Immature Vampires
+		for (Encounter v : nasties) {
+			if(!v.isTrap()) {
+				trail.disarm(v);
+			}
+		}
+		// Dracula encounter
+		if (board.getDracula().getLocation().equals(location)) {
+			
+		}
+	}
+
+	@Override
+	public String getLocation() {
+		return this.location;
+	}
+	
+	 
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO simple test cases
 	}
 }

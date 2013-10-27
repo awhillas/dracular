@@ -1,33 +1,39 @@
 package dracula.impl.map;
 
 import java.util.*;
+
 import dracula.impl.*;
 
 
 public interface Map {
 	
 	/**
-	 * Gets a list of locations that can be travelled to from the current location.
+	 * Gets a list of Strings that can be travelled to from the current String.
 	 */
-	List<Location> getAdjacentFor(Location location, EnumSet<TravelBy> by);
+	List<String> getAdjacentFor(String String, EnumSet<TravelBy> by);
 	
 	/**
-	 * Returns true if the location is at sea
+	 * Returns true if the String is at sea
 	 */
-	boolean isAtSea(Location location);
+	boolean isAtSea(String String);
 	
 	/**
-	 * Returns the location that represents the hospital for hunters
+	 * Is the given location an inland city
 	 */
-	Location getHospital();
+	public boolean isCity(String loc);
 	
 	/**
-	 * Returns the location that represents Castle Dracula.
+	 * Returns the String that represents the hospital for hunters
 	 */
-	Location getCastle();
+	String getHospital();
 	
 	/**
-     * Uses the pathfinder to get Route from one location to another using specified travel type
+	 * Returns the String that represents Castle Dracula.
+	 */
+	String getCastle();
+	
+	/**
+     * Uses the pathfinder to get Route from one String to another using specified travel type
      */
     ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by);
 }
