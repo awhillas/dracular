@@ -48,28 +48,12 @@ public class Game implements Dracula {
 	@Override
 	public DraculaMove decideMove() {
 		
-		List<Move> options = new ArrayList<Move>();
-		dracula.impl.Dracula d = board.getDracula();
-
-		List<String> optionLocs = board.getMap().getAdjacentFor(d.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
-		for (String loc : optionLocs) {
-			options.add(new Move(loc, loc));
-		}
-
-		if (d.canHide()) {
-			options.add(new Move("HI", d.getLocation()));
-		}
-		if (d.canDoubleBack()) {
-			options.addAll(d.getTrail().getDoubleBackMoves());
-		}
-		if (board.getDracula().canTeleport()) {
-			options.add(new Move("TP", GameMap.CASTLE));
-		}
+		Move[] options = board.getLegalMoves();
 		
 		Random random = new Random();
-		int next = random.nextInt(options.size());
+		int next = random.nextInt(options.length);
 		
-		return options.get(next);	// doesn't matter what location is here.
+		return options[next];	// doesn't matter what location is here.
 	}
 
 	

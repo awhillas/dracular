@@ -2,6 +2,7 @@ package dracula.impl;
 
 import dracula.Encounter;
 import dracula.Player;
+import dracula.impl.map.GameMap;
 
 /**
  * This just represents the Dracula piece on the board and all the data 
@@ -63,9 +64,9 @@ public class Dracula implements Player {
 		 * Cannot doubleBack
 		 * Cannot move via sea as health < 3
 		 * Cannot move to any point on trail
-		 * ????
+		 * TODO: the sea test is fish here :-/
 		*/
-		if (!canDoubleBack() || !canHide() || blood_points < 3)
+		if (!canDoubleBack() && !canHide() && blood_points < 3)
 			return false;
 		return true;
 	}
@@ -77,29 +78,47 @@ public class Dracula implements Player {
 	@Override
 	public void addToHealth(int amount) {
 		this.blood_points += amount;
-		//Draculas health is permitted to go beyond 40
+		//Dracula's health is permitted to go beyond 40
 		if (this.blood_points < 1) {
-			this.blood_points = 0; //Board over, man.
+			this.blood_points = 0; //Game over, man.
 		}
 	}
 
+	/**
+	 * "For each Dracula play (starting with D), the player character is
+	 * immediately followed by 6 characters."
+	 */
 	@Override
 	public void parsePastPlay(String pastPlay, Board board) {
-		// TODO Auto-generated method stub
+		
+		// "2 uppercase characters representing the new location of Dracula"
+		String action = pastPlay.substring(1, 3);
+		
+		// now have to calculate where this action will leave us...
+		Move move = null;
+		if (action.equals("HI")) {
+			move = new Move(action, location);
+		} else if(action.matches("D[0-5]")) {
+			int back = Integer.parseInt(action.substring(1));
+			move = trail.getMoveAt(back);
+		} else if(action.equals("TP")) {
+			move = new Move(action, GameMap.CASTLE);
+		} else {
+			// assume its a city name
+			move = new Move(action, action);
+		}
+		
+		makeMove(move, board);
 	}
 
 	/**
 	 * Translate a move into a location on the map.
 	 * "Dracula leaves a Trap/Vampire as soon as he enters a city, NOT when he 
 	 * leaves the city."
-	 * 
-	 * @param	move	2-letter move String, either a city or Dn (Double-back n-moves), 
-	 * 		HI (hide) or TP (teleport to Castle Dracula).
 	 */
 	@Override
 	public void makeMove(Move move, Board board) {
 		this.trail.addMove(move, this.getNewNasty(board));
-		
 	}
 
 	/**
@@ -116,6 +135,7 @@ public class Dracula implements Player {
 			return new Vampire(this.location);
 		}
 	}
+	
 	@Override
 	public int getHealth() {
 		return this.blood_points;
@@ -124,13 +144,6 @@ public class Dracula implements Player {
 	@Override
 	public String getLocation() {
 		return this.location;
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO simple test cases
 	}
 
 	@Override
@@ -141,5 +154,13 @@ public class Dracula implements Player {
 	@Override
 	public int getNumber() {
 		return 0;
+	}
+
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO simple test cases
 	}
 }

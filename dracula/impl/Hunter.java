@@ -51,13 +51,17 @@ public class Hunter implements Player {
 	public void parsePastPlay(String pastPlay, Board board) {
 		String newLocation = pastPlay.substring(1, 3);			// 2 uppercase characters representing the new location of the hunter. 
 		// 4 letters representing, in order, the encounters that occurred:
+		/* TODO: Should use these values to double check out model...
 		int traps = countOccurrences(pastPlay.substring(3), 'T');	// one 'T' for each Trap encountered (and disarmed)
 		boolean vampire = pastPlay.substring(3).contains("V");	// 'V' if an immature Vampire was encountered (and vanquished)
 		boolean dracula = pastPlay.substring(3).contains("D");	// 'D' if, finally, Dracula was confronted
-		
+		*/
 		this.makeMove(new Move(newLocation, newLocation), board);
 	}
 	
+	/**
+	 * General function for counting the occurrences of a character in a string.
+	 */
 	public static int countOccurrences(String haystack, char needle) {
 		int count = 0;
 		for (int i = 0; i < haystack.length(); i++) {
@@ -66,9 +70,7 @@ public class Hunter implements Player {
 			}
 		}
 		return count;
-	}	
-	
-	
+	}
 
 	/**
 	 * Move the hunter to the new location.
@@ -99,7 +101,9 @@ public class Hunter implements Player {
 					return;
 				}
 			}
-			// Immature Vampires
+		}
+		// Immature Vampires
+		for (Encounter t : nasties) {
 			if(!t.isTrap()) {
 				trail.disarm(t);
 			}

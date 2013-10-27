@@ -11,6 +11,7 @@ public interface Player {
 	 * splitting them into separate functions.
 	 */
 	public void makeMove(Move move, Board board);
+	//public Move[] getValidMoves(Board board);
 	public void addToHealth(int amount);
 	public int getHealth();
 	public String getLocation();

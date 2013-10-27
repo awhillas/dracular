@@ -5,8 +5,6 @@ package dracula.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Stack;
-
 import dracula.Encounter;
 
 /**
@@ -93,6 +91,15 @@ public class DraculaTrail {
 		}
 		return false;
 	}
+	
+	public boolean containsLocation(String location) {
+		for(Move move : trail) {
+			if(move.getLocation().equals(location)) {
+				return true;
+			}
+		}
+		return false;	
+	}
 
 	public boolean hasDoubleBack() {
 		for(int i = 1; i < TRAIL_LENGTH + 1; i++) {
@@ -115,11 +122,11 @@ public class DraculaTrail {
 		}
 		return out;
 	}
-	
+
 	/**
-	 * @param args
+	 * Return the move at the given move index (from 1-5)
 	 */
-	public static void main(String[] args) {
-		// TODO simple test cases
+	public Move getMoveAt(int index) {
+		return trail.get(index - 1);
 	}
 }

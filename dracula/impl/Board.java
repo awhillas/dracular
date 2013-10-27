@@ -1,8 +1,9 @@
 package dracula.impl;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Map.Entry;
-
+import java.util.List;
 import dracula.impl.map.*;
 import dracula.*;
 
@@ -36,10 +37,10 @@ public class Board implements BoardState {
 		 * TODO added the player numbers as we need these to counter their 
 		 * possible rail moves in the AI 
 		 */
-		players.put("G", new Hunter("G", 1)); //Lord Godalming
-		players.put("S", new Hunter("S", 2)); //Dr Seward
-		players.put("H", new Hunter("H", 3)); //Van Helsing
-		players.put("M", new Hunter("M", 4)); //Mina Harker
+		players.put("G", new Hunter("G", 0)); // Lord Godalming
+		players.put("S", new Hunter("S", 1)); // Dr Seward
+		players.put("H", new Hunter("H", 2)); // Van Helsing
+		players.put("M", new Hunter("M", 3)); // Mina Harker
 		players.put("D", dracula);
 	}
 	
@@ -63,14 +64,10 @@ public class Board implements BoardState {
 	}
 	
 	public int getRound() {
+		// TODO: this is not right...?
 		return this.turn / 5;	// 5 players
 	}
 
-	@Override
-	public BoardState getNextState(Move move) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public int getDracHealth() {
@@ -89,10 +86,31 @@ public class Board implements BoardState {
 		return out;
 	}
 
+    /**
+     * Returns a list of legal moves for Dracula to make in current board state
+     * @TODO:
+     */
 	@Override
 	public Move[] getLegalMoves() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Move> options = new ArrayList<Move>();
+
+		List<String> optionLocs = map.getAdjacentFor(dracula.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
+		
+		for (String loc : optionLocs) {
+			if(!dracula.getTrail().containsLocation(loc) && !loc.equals(GameMap.HOSPITAL)) {
+				options.add(new Move(loc, loc));
+			}
+		}
+		if (dracula.canHide()) {
+			options.add(new Move("HI", dracula.getLocation()));
+		}
+		if (dracula.canDoubleBack()) {
+			options.addAll(dracula.getTrail().getDoubleBackMoves());
+		}
+		if (dracula.canTeleport()) {
+			options.add(new Move("TP", GameMap.CASTLE));
+		}
+		return options.toArray(new Move[options.size()]);
 	}
 
 	@Override
@@ -103,6 +121,18 @@ public class Board implements BoardState {
 	
 	public HashMap<String, Player> getHunters() {
 		return this.players;
+	}
+
+	@Override
+	public BoardState getNextState(Move dracMove, Move[] hunterMoves) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Move[][] getHunterMoves() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
