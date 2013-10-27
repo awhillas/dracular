@@ -86,7 +86,6 @@ public class Dracula implements Player {
 	@Override
 	public void parsePastPlay(String pastPlay, Board board) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -126,7 +125,6 @@ public class Dracula implements Player {
 	public String getLocation() {
 		return this.location;
 	}
-
 	
 	/**
 	 * @param args

@@ -78,6 +78,5 @@ public class Game implements Dracula {
 	 */
 	public static void main(String[] args) {
 		// TODO simple test cases
-
 	}
 }

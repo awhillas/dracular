@@ -104,8 +104,7 @@ public class Hunter implements Player {
 	public String getLocation() {
 		return this.location;
 	}
-	
-	 
+		 
 	/**
 	 * @param args
 	 */

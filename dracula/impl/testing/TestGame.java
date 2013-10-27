@@ -1,10 +1,19 @@
 package dracula.impl.testing;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+
 import dracula.*;
 import dracula.impl.*;
+import dracula.impl.map.GameMap;
+import dracula.impl.map.Location;
+import dracula.impl.map.Map;
 
 
 public class TestGame {
+	private Game game;
+	private String[] messages = null;
+	private HashMap<String, Hunter> hunters;
 	/*
 	 * The MapData has to keep track of the various states:
 	 * Hunter positions 
@@ -42,70 +51,135 @@ public class TestGame {
 	 * Vampire life (GameData, GraphMap)
 	 */
 	
-	public static void main(String[] args) {
-/*			
- * GameData Gamedata = new GameData();
-		
-		//Traps work, hospitals work, Encounters work
-		String testString = "GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD.. GNE.... SNET... HGTTT.. MJM.... DKVT... GJM.... DCD....";
-		String[] messagesTest;
 	
+	public static void main(String[] args) {
+		TestGame test = new TestGame();
+		test.game = new Game();
+		test.hunters = test.game.getHunters();
+		test.setupGame();
+		//test.emulateGame();
 		
-		LocationData loc1 = new LocationData("GT", "Town");
-		LocationData loc2 = new LocationData("NE", "Town");
-		Gamedata.MapData.put("GT", loc1);
-		Gamedata.MapData.put("NE", loc2);
-		Gamedata.MapData.get("GT").traps = 2;
-		Gamedata.MapData.get("NE").traps = 1;
-		
-		//Builds board data from pastPlays string
-		Gamedata.doString(testString);
-		//Builds current state of Dracula
-		//update the game state and player states
-		System.out.println("Player: Dracula");
-		System.out.println("Health: "+Gamedata.dracula.health);
-		System.out.println("Location: "+Gamedata.dracula.location);
-		System.out.println("Status: "+Gamedata.dracula.status);
-		System.out.println("Events: "+Gamedata.dracula.events);
-		
-		System.out.println("Actions: "+Gamedata.dracula.action);
-		System.out.println("");
-		System.out.println("Player: "+Gamedata.HuntersData.get("G").name);
-		System.out.println("Health: "+Gamedata.HuntersData.get("G").health);
-		System.out.println("Location: "+Gamedata.HuntersData.get("G").location);
-		System.out.println("Status: "+Gamedata.HuntersData.get("G").status);
-		System.out.println("Encounters: "+Gamedata.HuntersData.get("G").encounters);
-		
-		System.out.println("");
-		System.out.println("Player: "+Gamedata.HuntersData.get("S").name);
-		System.out.println("Health: "+Gamedata.HuntersData.get("S").health);
-		System.out.println("Location: "+Gamedata.HuntersData.get("S").location);
-		System.out.println("Status: "+Gamedata.HuntersData.get("S").status);
-		System.out.println("Encounters: "+Gamedata.HuntersData.get("S").encounters);
-		
-		System.out.println("");
-		System.out.println("Player: "+Gamedata.HuntersData.get("H").name);
-		System.out.println("Health: "+Gamedata.HuntersData.get("H").health);
-		System.out.println("Location: "+Gamedata.HuntersData.get("H").location);
-		System.out.println("Status: "+Gamedata.HuntersData.get("H").status);
-		System.out.println("Encounters: "+Gamedata.HuntersData.get("H").encounters);
-		
-		System.out.println("");		
-		System.out.println("Player: "+Gamedata.HuntersData.get("M").name);
-		System.out.println("Health: "+Gamedata.HuntersData.get("M").health);
-		System.out.println("Location: "+Gamedata.HuntersData.get("M").location);
-		System.out.println("Status: "+Gamedata.HuntersData.get("M").status);
-		System.out.println("Encounters: "+Gamedata.HuntersData.get("M").encounters);
-		
-		assert Gamedata.dracula.events.length() == 2;
-		assert Gamedata.dracula.action.length() == 1;
-		assert Gamedata.HuntersData.get("G").encounters.length() == 4;
-		assert Gamedata.HuntersData.get("S").encounters.length() == 4;
-		assert Gamedata.HuntersData.get("H").encounters.length() == 4;
-		assert Gamedata.HuntersData.get("M").encounters.length() == 4;
-		
-		//All of the data should be input now
-		//It is Draculas move, move based on the data
-*/
 	}
+	
+	public void setupGame() {
+		Map m = new GameMap();
+		
+		//Madrid, London, Belgrade, Berlin
+		//MA, LO, BE, BR
+		this.game.update("GMA....", this.messages);
+		this.game.update("SLO....", this.messages);
+		this.game.update("HBE....", this.messages);
+		this.game.update("MBR....", this.messages);
+		
+		Location loc1 = this.hunters.get("G").getLocation();
+		Location loc2 = this.hunters.get("S").getLocation();
+		Location loc3 = this.hunters.get("H").getLocation();
+		Location loc4 = this.hunters.get("M").getLocation();
+		assert loc1.getName().contains("MA");
+		assert loc2.getName().contains("LO");
+		assert loc3.getName().contains("BE");
+		assert loc4.getName().contains("BR");
+		
+		//Print round 0 Setup
+		printHunterStatus();
+		printDraculaStatus();
+		printGameStatus();
+		
+		game.getDracula().setLocation(new Location("MR"));
+		game.getDracula().update();
+		
+		this.game.update(HunterMover("G", "RANDOM"), this.messages);
+		this.game.update(HunterMover("S", "RANDOM"), this.messages);
+		this.game.update(HunterMover("H", "SEARCH"), this.messages);
+		this.game.update(HunterMover("M", "SEARCH"), this.messages);
+		
+		
+		assert m.getAdjacentFor(hunters.get("G").getLocation(), EnumSet.of(TravelBy.road)).contains(loc1);
+		assert m.getAdjacentFor(hunters.get("S").getLocation(), EnumSet.of(TravelBy.road)).contains(loc2);
+		assert m.getAdjacentFor(hunters.get("H").getLocation(), EnumSet.of(TravelBy.road)).contains(loc3);
+		assert m.getAdjacentFor(hunters.get("M").getLocation(), EnumSet.of(TravelBy.road)).contains(loc4);
+		
+		for (String key : hunters.keySet()) {
+			assert hunters.get(key).getHealth() >= 0;
+		}
+
+		//Print end of round 1
+		printHunterStatus();
+		printDraculaStatus();
+		printGameStatus();
+		
+	}
+	
+	public void emulateGame() {
+		while (this.game.getDracula().getHealth() > 0 && this.game.getScore() > 1){
+			this.game.update(HunterMover("G", "RANDOM"), this.messages);
+			this.game.update(HunterMover("S", "RANDOM"), this.messages);
+			this.game.update(HunterMover("H", "SEARCH"), this.messages);
+			this.game.update(HunterMover("M", "SEARCH"), this.messages);
+			
+			DraculaMove move = this.game.getDracula().decideMove();
+			move.getPlayAsString();
+		}
+	}
+	
+	
+	public void printDraculaStatus() {
+		System.out.println("-----------------------");
+		System.out.println("Dracula Status");
+		System.out.println("Location: " + this.game.getDracula().getLocation().getName());
+		System.out.println("Health: " + this.game.getDracula().getHealth());
+		System.out.println("-----------------------");
+		System.out.println("");
+	}
+	
+	public void printHunterStatus() {
+		System.out.println("-----------------------");
+		System.out.println("Hunter Status");
+		for (String key : hunters.keySet()) {			
+		    System.out.println("Hunter: " +hunters.get(key).getHunter());
+		    System.out.println("Health: " +hunters.get(key).getHealth());
+		    System.out.println("Location: " +hunters.get(key).getLocation().getName());
+			System.out.println("");
+		}
+	}
+	
+	public void printGameStatus() {
+		System.out.println("-----------------------");
+		System.out.println("Game Status");
+		System.out.println("Round: " + this.game.getRound());
+		System.out.println("Score: " + this.game.getScore());
+		System.out.println("-----------------------");
+		System.out.println("");
+	}
+	
+	public void dummyRounds() {
+		String[] testRounds = new String[16];
+		testRounds[0]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[1]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[2]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[3]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[4]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[5]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[6]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[7]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[8]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[9]  = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[10] = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[11] = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[12] = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[13] = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[14] = "GBE.... SBR.... HLO.... MCA....";
+		testRounds[15] = "GBE.... SBR.... HLO.... MCA....";
+	}
+	
+	/*
+	 * Create a basic hunter AI and get its first move based on Random or the
+	 * path finder
+	 */
+	public String HunterMover(String name, String type) {
+		Hunter hunter = hunters.get(name);
+		HunterMove newMove = new HunterMove(hunter, type, this.game);
+		return newMove.hunterMove();
+	}
+
 }
