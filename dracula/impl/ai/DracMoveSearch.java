@@ -1,6 +1,7 @@
 package dracula.impl.ai;
 
 import dracula.impl.*;
+import java.util.*;
 
 /**
  *
@@ -21,13 +22,13 @@ public class DracMoveSearch {
      */
 
     static Move[] dracMoves;
-    static Move[][] hunterMoves;
+    static List<List<Move>> hunterMoves;
     static int[] hunterMovesIdx = new int[4];
 
     
     public static Move getBestMove(BoardState state) {
         dracMoves = state.getLegalMoves();
-        hunterMoves = state.getHunterMoves();
+        hunterMoves =  state.getHunterMoves();
 
         Move bestMove = dracMoves[0];
         int bestAvScore = 0;
@@ -42,7 +43,7 @@ public class DracMoveSearch {
                 Move[] nextHunterMoves = new Move[4];
                 for (int j = 0; j < 4; j++) {
                     //write the new set of hunter moves
-                    nextHunterMoves[j] = hunterMoves[j][hunterMovesIdx[j]];
+                    nextHunterMoves[j] = hunterMoves.get(j).get(hunterMovesIdx[j]);
                 }
                 //calculate the average score for all states evaluated so far
                 avScore = ((avScore * (statesEval / (statesEval + 1))) + (BoardStateScorer.getScore(state.getNextState(dracMoves[i], nextHunterMoves)) / (statesEval + 1)));
@@ -72,7 +73,7 @@ public class DracMoveSearch {
      */
     private static boolean nextMoveComb() {
         for (int i = 0; i < hunterMovesIdx.length; i++) {
-            if (hunterMovesIdx[i] == hunterMoves[i].length - 1) {
+            if (hunterMovesIdx[i] == hunterMoves.get(i).size() - 1) {
                 hunterMovesIdx[i] = 0;
             } else {
                 hunterMovesIdx[i]++;
