@@ -9,7 +9,7 @@ public interface BoardState {
      * Returns new BoardState if Dracula had made a certain move
      * Assume hunters will always move closer to dracula (worst case).
      */
-    public BoardState getNextState(Move move);
+    public BoardState getNextState(Move dracMove, Move[] hunterMoves);
     
     /*
      * Returns Dracula's current health in current board state
