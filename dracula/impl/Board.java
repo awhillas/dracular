@@ -1,9 +1,14 @@
 package dracula.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import dracula.impl.map.*;
 import dracula.*;
 
@@ -88,17 +93,17 @@ public class Board implements BoardState {
 
     /**
      * Returns a list of legal moves for Dracula to make in current board state
-     * @TODO:
+     * @TODO: Perhaps move this to Dracula class?
      */
 	@Override
 	public Move[] getLegalMoves() {
 		List<Move> options = new ArrayList<Move>();
 
-		List<String> optionLocs = map.getAdjacentFor(dracula.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
+		List<String> adjacent = map.getAdjacentFor(dracula.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
 		
-		for (String loc : optionLocs) {
+		for (String loc : adjacent) {
 			if(!dracula.getTrail().containsLocation(loc) && !loc.equals(GameMap.HOSPITAL)) {
-				options.add(new Move(loc, loc));
+				options.add(new Move(loc));
 			}
 		}
 		if (dracula.canHide()) {
@@ -129,12 +134,65 @@ public class Board implements BoardState {
 		return null;
 	}
 
+	/**
+	 * "Rail moves: The maximum distance that can be moved via rail is determined 
+	 * by the sum of the round number (0..366) and the Hunter number (0..3)
+	 * 	- sum mod 4 is 0: No train move is permitted for hunters this turn.
+	 * 	- sum mod 4 is 1: Hunters may move to any city adjacent to the current 
+	 *    city via a rail link.
+	 *  - sum mod 4 is 2: Hunters may move to any city adjacent to the current 
+	 *    city via a rail link, or any city adjacent via rail to such a city.
+	 *  - sum mod 4 is 3: Hunters may move to any city adjacent to the current 
+	 *    city via a rail link, or any city adjacent via rail to such a city, 
+	 *    or any city adjacent via rail to such a city.  (IE move up to three 
+	 *    steps by rail).
+	 *  When the rail move is to a non-adjacent city the Hunter does not 
+	 *  actually enter the intermediate cities, so any encounters there are not 
+	 *  encountered etc."
+	 */
 	@Override
-	public Move[][] getHunterMoves() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<List<Move>> getHunterMoves() {
+		List<List<Move>> out = new ArrayList<List<Move>>();
+		
+		for(Player h : players.values()) {
+			if(h.getNumber() != -1) {	// i.e. not Dracula
+				
+				// Seas and Cities!
+				List<String> validMoves = map.getAdjacentFor(h.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
+								
+				// Rail is more complex
+				int railHops = (h.getNumber() + getRound()) % 4;
+				if(map.isOnRail(h.getLocation()) && railHops > 0) {
+					// Breadth First Depth Limited Search of the rail network.
+					Set<String> railCities = new HashSet<String>(map.getAdjacentFor(h.getLocation(), EnumSet.of(TravelBy.rail)));
+					Set<String> frontier = railCities;
+					Set<String> newFrontier = new HashSet<String>();
+					
+					for(int i = 1; i < railHops; i++) {	// depth
+						for(String city : frontier) {
+							newFrontier.addAll(map.getAdjacentFor(city, EnumSet.of(TravelBy.rail)));
+							newFrontier.removeAll(railCities);
+						}
+						railCities.addAll(newFrontier);
+						frontier = newFrontier;
+					}
+					
+					railCities.remove(h.getLocation());
+					validMoves.addAll(railCities);
+				}
+				out.add(locations2Moves(validMoves));
+			}
+		}
+		return out;
 	}
 	
+	public static ArrayList<Move> locations2Moves(Collection<String> locations) {
+		ArrayList<Move> out = new ArrayList<Move>();
+		for(String loc : locations) {
+			out.add(new Move(loc));
+		}
+		return out;
+	}
 	
 	/**
 	 * @param args
@@ -143,5 +201,6 @@ public class Board implements BoardState {
 		// TODO simple test cases
 		Board b = new Board();
 		b.parsePastPlay("GBE.... SBR.... HLO.... MCA.... DSJ.V.. GSJVD..");
+		System.out.println("YAY!");
 	}
 }

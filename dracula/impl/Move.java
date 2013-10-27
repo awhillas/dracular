@@ -21,6 +21,14 @@ public class Move implements DraculaMove {
 		this.action = action;
 		this.location = location;
 	}
+
+	/**
+	 * Many instances action = location are the same
+	 */
+	public Move(String location) {
+		this.action = location;
+		this.location = location;
+	}
 	
 	public String getLocation() {
 		return this.location;

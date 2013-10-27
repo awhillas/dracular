@@ -153,7 +153,7 @@ public class Dracula implements Player {
 
 	@Override
 	public int getNumber() {
-		return 0;
+		return -1;
 	}
 
 	

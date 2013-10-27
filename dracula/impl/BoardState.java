@@ -1,5 +1,7 @@
 package dracula.impl;
 
+import java.util.List;
+
 /**
  * @author JEM
  */
@@ -25,11 +27,12 @@ public interface BoardState {
      */
     public Move[] getLegalMoves();
     
-    
     /*
      * Returns a 2D array of the moves available for each hunter
+     * Note: this can't be a 2D array as each Hunter will have a different 
+     * number of moves.
      */
-    public Move[][] getHunterMoves();
+    public List<List<Move>> getHunterMoves();
     
     /*
      * returns array of current min dist between drac and hunters (from adjacency matrix)
