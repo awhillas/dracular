@@ -49,6 +49,30 @@ public class Board implements BoardState {
 		players.put("D", dracula);
 	}
 	
+	/**
+	 * Copy constructor
+	 */
+	public static Board makeBoard(Board b) {
+		Board newBoard = new Board();
+		
+		newBoard.setScore(b.getScore());
+		newBoard.setTurn(b.getTurn());
+		
+		return newBoard;
+	}
+	
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public void parsePastPlay(String pastPlay) {
 		String id = pastPlay.substring(0, 1);
 		players.get(id).parsePastPlay(pastPlay, this);
