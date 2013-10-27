@@ -34,7 +34,7 @@ public class DracMoveSearch {
 
         //test each possible move for dracula
         for (int i = 0; i < dracMoves.length; i++) {
-            int avScore = 0;
+            double avScore = 0;
             int statesEval = 0;
             initMoveComb();
             
@@ -45,7 +45,7 @@ public class DracMoveSearch {
                     nextHunterMoves[j] = hunterMoves[j][hunterMovesIdx[j]];
                 }
                 //calculate the average score for all states evaluated so far
-                avScore = (avScore * (statesEval / (statesEval + 1))) + (BoardStateScorer.getScore(state.getNextState(dracMoves[i], nextHunterMoves)) / (statesEval + 1));
+                avScore = ((avScore * (statesEval / (statesEval + 1))) + (BoardStateScorer.getScore(state.getNextState(dracMoves[i], nextHunterMoves)) / (statesEval + 1)));
                 statesEval++;
             } while (nextMoveComb());
             //if average score is better than the best average score then this is the move to make
