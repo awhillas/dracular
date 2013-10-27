@@ -17,6 +17,21 @@ public interface Map {
 	 */
 	boolean isAtSea(String String);
 	
+	 /**
+	* Returns true if the location is on the rail
+	*/
+	boolean isOnRoad(String location);
+
+	/**
+	* Returns true if the location is on the road
+	*/
+	boolean isOnRail(String location);
+
+	/**
+	* Returns true if the location is a port city
+	*/
+	boolean isPort(String location);
+	
 	/**
 	 * Is the given location an inland city
 	 */
