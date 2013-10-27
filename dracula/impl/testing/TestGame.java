@@ -6,6 +6,7 @@ import dracula.*;
 import dracula.impl.*;
 import dracula.impl.map.GameMap;
 import dracula.impl.map.Map;
+import dracula.impl.ai.DracMoveSearch;
 
 
 public class TestGame {
@@ -55,7 +56,13 @@ public class TestGame {
 		test.board = new Board();
 		test.hunters = test.board.getHunters();
 		test.setupGame();
-		//test.emulateGame();
+                
+                //run for ten or so rounds
+                int i = 0;
+		while (i < 10){
+                    test.emulateGame();
+                    i++;
+                }
 	}
 	
 	public void setupGame() {
@@ -134,9 +141,11 @@ public class TestGame {
 			this.board.parsePastPlay(HunterMover("S", "RANDOM"));
 			this.board.parsePastPlay(HunterMover("H", "SEARCH"));
 			this.board.parsePastPlay(HunterMover("M", "SEARCH"));
-			
-			//DraculaMove move = board.getDracula();
-			//move.getPlayAsString();
+			DraculaMove move = DracMoveSearch.getBestMove(board);
+                        this.board.parsePastPlay("D" + move.getPlayAsString());
+                        printHunterStatus();
+                        printDraculaStatus();
+                        printGameStatus();
 		}
 	}
 	
