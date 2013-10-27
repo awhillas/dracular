@@ -106,11 +106,13 @@ public class AdjacencyMatrix implements Graph {
             //create a queue to store the next vertices to be expanded
             SearchPriorityQueue queue = new SearchPriorityQueue();
             queue.add(this.vertices[i], 0, null);
-            int currDist = 0;
+            ArrayList<Integer> distances = new ArrayList<Integer>();
+            distances.add(0);
             //loop until the queue is empy (there are no new nodes to expand)
             while (!(queue.isEmptyQueue())) {
-                currDist++;
+                int currDist = distances.get(0) + 1;
                 String next = queue.deQueue();
+                distances.remove(0);
                 String[] expanded = this.adjacentVertices(next);
                 for (int j = 0; j < expanded.length; j++) {
                     if (!(queue.alreadyQueued(expanded[j]))) {
@@ -118,6 +120,7 @@ public class AdjacencyMatrix implements Graph {
                         this.edges[i][this.indexOf(expanded[j])] = currDist;
                         this.edges[this.indexOf(expanded[j])][i] = currDist;
                         queue.add(expanded[j], 0, null);
+                        distances.add(currDist);
                     }
                 }
             }
