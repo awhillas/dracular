@@ -207,4 +207,17 @@ public class GameMap implements Map {
     	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
     	return Math.abs(hash);
     }
+
+    /**
+     * Gets the minimum distance between two locations.
+     * If there are both road and rail between A and B, return the minimum of the two.
+     * 
+     * TODO: Incorporate sea routes.
+     */
+	@Override
+	public int getMinDistanceBetween(String loc1, String loc2) {
+		return Math.min(
+				roads.getMinDist(loc1, loc2),
+				rails.getMinDist(loc1, loc2));
+	}
 }

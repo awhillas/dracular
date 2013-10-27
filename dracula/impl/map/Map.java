@@ -51,4 +51,12 @@ public interface Map {
      * Uses the pathfinder to get Route from one String to another using specified travel type
      */
     ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by);
+
+    /**
+     * Gets the minimum distance between two locations.
+     * If there are both road and rail between A and B, return the minimum of the two.
+     * 
+     * TODO: Incorporate sea routes.
+     */
+	int getMinDistanceBetween(String loc1, String loc2);
 }

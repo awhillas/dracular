@@ -144,8 +144,17 @@ public class Board implements BoardState {
 
 	@Override
 	public int[] getHunterDistances() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		String dLoc = this.dracula.getLocation();		
+		int[] distances = new int[players.size()];
+
+		int i = 0;
+		while (players.entrySet().iterator().hasNext()) {
+			String hunterLoc = players.entrySet().iterator().next().getValue().getLocation();
+			distances[i] = map.getMinDistanceBetween(dLoc, hunterLoc);
+		}
+		
+		return distances;
 	}
 	
 	public HashMap<String, Player> getHunters() {
