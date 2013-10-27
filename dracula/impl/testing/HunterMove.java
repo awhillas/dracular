@@ -92,10 +92,15 @@ public class HunterMove {
 	}
 	
 	public String hunterSearchMove() {
-        Map m = new GameMap();
-        ArrayList<String> path = m.getRoute(hunter.getLocation(), 
-        		board.getDracula().getLocation(), new ArrayList<String>(), TravelBy.road);
-        return path.get(1);
+            if (hunter.getLocation().equals(board.getDracula().getLocation())){
+                return hunter.getLocation();
+            }
+            else {
+                Map m = new GameMap();
+                ArrayList<String> path = m.getRoute(hunter.getLocation(), 
+                                board.getDracula().getLocation(), new ArrayList<String>(), TravelBy.road);
+                return path.get(1);
+            }
 	}
 	
 	public String getEncounters(String location) {
