@@ -26,6 +26,12 @@ public interface BoardState {
      */
     public Move[] getLegalMoves();
     
+    
+    /*
+     * Returns a 2D array of the moves available for each hunter
+     */
+    public Move[][] getHunterMoves();
+    
     /*
      * returns array of current min dist between drac and hunters (from adjacency matrix)
      * need a way of including sea and land based moves into same distance calc 
