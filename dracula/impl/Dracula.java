@@ -22,7 +22,7 @@ public class Dracula implements Player {
 	public Dracula () {
  		this.blood_points = 40;
  		this.trail = new DraculaTrail();
- 		this.location = "";
+ 		this.location = "BC";
 	}
 	
 	/**
@@ -131,5 +131,15 @@ public class Dracula implements Player {
 	 */
 	public static void main(String[] args) {
 		// TODO simple test cases
+	}
+
+	@Override
+	public String getName() {
+		return "D";
+	}
+
+	@Override
+	public int getNumber() {
+		return 0;
 	}
 }

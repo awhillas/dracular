@@ -32,10 +32,14 @@ public class Board implements BoardState {
 		this.dracula = new Dracula();
 		
 		this.players = new HashMap<String, Player>();
-		players.put("G", new Hunter("Lord Godalming"));
-		players.put("S", new Hunter("Dr Seward"));
-		players.put("H", new Hunter("Van Helsing"));
-		players.put("M", new Hunter("Mina Harker"));
+		/*
+		 * TODO added the player numbers as we need these to counter their 
+		 * possible rail moves in the AI 
+		 */
+		players.put("G", new Hunter("G", 1)); //Lord Godalming
+		players.put("S", new Hunter("S", 2)); //Dr Seward
+		players.put("H", new Hunter("H", 3)); //Van Helsing
+		players.put("M", new Hunter("M", 4)); //Mina Harker
 		players.put("D", dracula);
 	}
 	
@@ -95,6 +99,10 @@ public class Board implements BoardState {
 	public int[] getHunterDistances() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public HashMap<String, Player> getHunters() {
+		return this.players;
 	}
 	
 	

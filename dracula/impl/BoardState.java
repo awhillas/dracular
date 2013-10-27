@@ -37,4 +37,6 @@ public interface BoardState {
      * need a way of including sea and land based moves into same distance calc 
      */
     public int[] getHunterDistances();
+
+	BoardState getNextState(Move move);
 }

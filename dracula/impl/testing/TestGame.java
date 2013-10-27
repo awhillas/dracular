@@ -1,19 +1,17 @@
 package dracula.impl.testing;
 
-import java.util.EnumSet;
 import java.util.HashMap;
 
 import dracula.*;
 import dracula.impl.*;
 import dracula.impl.map.GameMap;
-import dracula.impl.map.Location;
 import dracula.impl.map.Map;
 
 
 public class TestGame {
-	private Game game;
+	private Board board;
 	private String[] messages = null;
-	private HashMap<String, Hunter> hunters;
+	private HashMap<String, Player> hunters;
 	/*
 	 * The MapData has to keep track of the various states:
 	 * Hunter positions 
@@ -54,11 +52,10 @@ public class TestGame {
 	
 	public static void main(String[] args) {
 		TestGame test = new TestGame();
-		test.game = new Game();
-		test.hunters = test.game.getHunters();
+		test.board = new Board();
+		test.hunters = test.board.getHunters();
 		test.setupGame();
 		//test.emulateGame();
-		
 	}
 	
 	public void setupGame() {
@@ -66,38 +63,59 @@ public class TestGame {
 		
 		//Madrid, London, Belgrade, Berlin
 		//MA, LO, BE, BR
-		this.game.update("GMA....", this.messages);
-		this.game.update("SLO....", this.messages);
-		this.game.update("HBE....", this.messages);
-		this.game.update("MBR....", this.messages);
+		this.board.parsePastPlay("GMA....");
+		this.board.parsePastPlay("SLO....");
+		this.board.parsePastPlay("HBE....");
+		this.board.parsePastPlay("MBR....");
 		
-		Location loc1 = this.hunters.get("G").getLocation();
-		Location loc2 = this.hunters.get("S").getLocation();
-		Location loc3 = this.hunters.get("H").getLocation();
-		Location loc4 = this.hunters.get("M").getLocation();
-		assert loc1.getName().contains("MA");
-		assert loc2.getName().contains("LO");
-		assert loc3.getName().contains("BE");
-		assert loc4.getName().contains("BR");
+		String loc1 = this.hunters.get("G").getLocation();
+		String loc2 = this.hunters.get("S").getLocation();
+		String loc3 = this.hunters.get("H").getLocation();
+		String loc4 = this.hunters.get("M").getLocation();
+		
+		//Setup worked
+		assert loc1.contains("MA");
+		assert loc2.contains("LO");
+		assert loc3.contains("BE");
+		assert loc4.contains("BR");
 		
 		//Print round 0 Setup
 		printHunterStatus();
 		printDraculaStatus();
 		printGameStatus();
 		
-		game.getDracula().setLocation(new Location("MR"));
-		game.getDracula().update();
+		//Run an update to setup Dracula in the game world
+		//board.getDracula().update();
 		
-		this.game.update(HunterMover("G", "RANDOM"), this.messages);
-		this.game.update(HunterMover("S", "RANDOM"), this.messages);
-		this.game.update(HunterMover("H", "SEARCH"), this.messages);
-		this.game.update(HunterMover("M", "SEARCH"), this.messages);
+		//Run the first round moves for each hunter using a type of dummy AI
+		String player1 = HunterMover("G", "RANDOM");
+		String player2 = HunterMover("S", "RANDOM");
+		String player3 = HunterMover("H", "SEARCH");
+		String player4 = HunterMover("M", "SEARCH");
 		
+		System.out.println("Turn: " + player1);
+		System.out.println("Turn: " + player2);
+		System.out.println("Turn: " + player3);
+		System.out.println("Turn: " + player4);
 		
+		this.board.parsePastPlay(player1);
+		this.board.parsePastPlay(player2);
+		this.board.parsePastPlay(player3);
+		this.board.parsePastPlay(player4);
+		
+		/* 
+		 * Checks to see if the hunters executed a legal move.
+		 * The previous location that they started from should be in the adjacency 
+		 * list for their current location. Trail travel excluded
+		 
 		assert m.getAdjacentFor(hunters.get("G").getLocation(), EnumSet.of(TravelBy.road)).contains(loc1);
 		assert m.getAdjacentFor(hunters.get("S").getLocation(), EnumSet.of(TravelBy.road)).contains(loc2);
 		assert m.getAdjacentFor(hunters.get("H").getLocation(), EnumSet.of(TravelBy.road)).contains(loc3);
 		assert m.getAdjacentFor(hunters.get("M").getLocation(), EnumSet.of(TravelBy.road)).contains(loc4);
+		*/
+		
+		assert hunters.get("H").getHealth() < 9;
+		assert board.getDracula().getHealth() < 40;
 		
 		for (String key : hunters.keySet()) {
 			assert hunters.get(key).getHealth() >= 0;
@@ -111,14 +129,14 @@ public class TestGame {
 	}
 	
 	public void emulateGame() {
-		while (this.game.getDracula().getHealth() > 0 && this.game.getScore() > 1){
-			this.game.update(HunterMover("G", "RANDOM"), this.messages);
-			this.game.update(HunterMover("S", "RANDOM"), this.messages);
-			this.game.update(HunterMover("H", "SEARCH"), this.messages);
-			this.game.update(HunterMover("M", "SEARCH"), this.messages);
+		while (this.board.getDracula().getHealth() > 0){
+			this.board.parsePastPlay(HunterMover("G", "RANDOM"));
+			this.board.parsePastPlay(HunterMover("S", "RANDOM"));
+			this.board.parsePastPlay(HunterMover("H", "SEARCH"));
+			this.board.parsePastPlay(HunterMover("M", "SEARCH"));
 			
-			DraculaMove move = this.game.getDracula().decideMove();
-			move.getPlayAsString();
+			//DraculaMove move = board.getDracula();
+			//move.getPlayAsString();
 		}
 	}
 	
@@ -126,8 +144,8 @@ public class TestGame {
 	public void printDraculaStatus() {
 		System.out.println("-----------------------");
 		System.out.println("Dracula Status");
-		System.out.println("Location: " + this.game.getDracula().getLocation().getName());
-		System.out.println("Health: " + this.game.getDracula().getHealth());
+		System.out.println("Location: " + this.board.getDracula().getLocation());
+		System.out.println("Health: " + this.board.getDracula().getHealth());
 		System.out.println("-----------------------");
 		System.out.println("");
 	}
@@ -136,9 +154,9 @@ public class TestGame {
 		System.out.println("-----------------------");
 		System.out.println("Hunter Status");
 		for (String key : hunters.keySet()) {			
-		    System.out.println("Hunter: " +hunters.get(key).getHunter());
+		    System.out.println("Hunter: " +hunters.get(key).getName());
 		    System.out.println("Health: " +hunters.get(key).getHealth());
-		    System.out.println("Location: " +hunters.get(key).getLocation().getName());
+		    System.out.println("Location: " +hunters.get(key).getLocation());
 			System.out.println("");
 		}
 	}
@@ -146,8 +164,8 @@ public class TestGame {
 	public void printGameStatus() {
 		System.out.println("-----------------------");
 		System.out.println("Game Status");
-		System.out.println("Round: " + this.game.getRound());
-		System.out.println("Score: " + this.game.getScore());
+		System.out.println("Round: " + this.board.getRound());
+		//System.out.println("Score: " + this.board.getScore());
 		System.out.println("-----------------------");
 		System.out.println("");
 	}
@@ -177,8 +195,8 @@ public class TestGame {
 	 * path finder
 	 */
 	public String HunterMover(String name, String type) {
-		Hunter hunter = hunters.get(name);
-		HunterMove newMove = new HunterMove(hunter, type, this.game);
+		Player hunter = hunters.get(name);
+		HunterMove newMove = new HunterMove(hunter, type, this.board);
 		return newMove.hunterMove();
 	}
 

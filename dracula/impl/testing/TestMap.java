@@ -17,28 +17,28 @@ public class TestMap {
 		Map m = new GameMap();
 		
 		// Madrid
-		Location ma = new Location("MA");
+		String ma = "MA";
 		assert m.getAdjacentFor(ma, EnumSet.allOf(TravelBy.class)).size() == 10;
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.road)).size() == 6;
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.rail)).size() == 4;
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.sea)).size() == 0;
 		
 		// Cagliari
-		Location cg = new Location("CG");
+		String cg = "CG";
 		assert m.getAdjacentFor(cg, EnumSet.allOf(TravelBy.class)).size() == 2;
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.road)).size() == 0;
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.rail)).size() == 0;
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.sea)).size() == 2;
 				
 		// Venice
-		Location ve = new Location("VE");
+		String ve = "VE";
 		assert m.getAdjacentFor(ve, EnumSet.allOf(TravelBy.class)).size() == 6;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.road)).size() == 4;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.rail)).size() == 1;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.sea)).size() == 1;
 		
 		assert !m.isAtSea(ve);
-		assert m.isAtSea(new Location("NS"));
+		assert m.isAtSea("NS");
 		
 		/*
 		 * Map Hash tests

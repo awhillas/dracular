@@ -9,12 +9,13 @@ public class Hunter implements Player {
 	
 	// Core state.
 	private String name;
-	
+	private int number;
 	// Turn-based state.
 	private String location;	// Two letter code for location.
 	private int health;			
 	
-	public Hunter(String name) {
+	public Hunter(String name, int playerNumber) {
+		this.number = playerNumber;
 		this.name = name;
 		this.health = 9;
 	}
@@ -35,15 +36,24 @@ public class Hunter implements Player {
 		return this.health;
 	}
 	
+	@Override
+	public String getName() {
+		return this.name;
+	}
+	
+	public int getNumber() {
+		return this.number;
+	}
+	
 	/**
 	 */
 	@Override
 	public void parsePastPlay(String pastPlay, Board board) {
-		String newLocation = pastPlay.substring(1, 2);			// 2 uppercase characters representing the new location of the hunter. 
+		String newLocation = pastPlay.substring(1, 3);			// 2 uppercase characters representing the new location of the hunter. 
 		// 4 letters representing, in order, the encounters that occurred:
-		int traps = countOccurrences(pastPlay.substring(2, 6), 'T');	// one 'T' for each Trap encountered (and disarmed)
-		boolean vampire = pastPlay.substring(2, 6).contains("V");	// 'V' if an immature Vampire was encountered (and vanquished)
-		boolean dracula = pastPlay.substring(2, 6).contains("D");	// 'D' if, finally, Dracula was confronted
+		int traps = countOccurrences(pastPlay.substring(3), 'T');	// one 'T' for each Trap encountered (and disarmed)
+		boolean vampire = pastPlay.substring(3).contains("V");	// 'V' if an immature Vampire was encountered (and vanquished)
+		boolean dracula = pastPlay.substring(3).contains("D");	// 'D' if, finally, Dracula was confronted
 		
 		this.makeMove(new Move(newLocation, newLocation), board);
 	}
@@ -57,6 +67,8 @@ public class Hunter implements Player {
 		}
 		return count;
 	}	
+	
+	
 
 	/**
 	 * Move the hunter to the new location.
@@ -87,16 +99,15 @@ public class Hunter implements Player {
 					return;
 				}
 			}
-		}
-		// Immature Vampires
-		for (Encounter v : nasties) {
-			if(!v.isTrap()) {
-				trail.disarm(v);
+			// Immature Vampires
+			if(!t.isTrap()) {
+				trail.disarm(t);
 			}
 		}
 		// Dracula encounter
 		if (board.getDracula().getLocation().equals(location)) {
-			
+			board.getDracula().addToHealth(-Encounter.HUNTER_COST);
+			this.addToHealth(-Encounter.DRACULA_COST);
 		}
 	}
 

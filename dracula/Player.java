@@ -14,4 +14,6 @@ public interface Player {
 	public void addToHealth(int amount);
 	public int getHealth();
 	public String getLocation();
+	public String getName();
+	public int getNumber();
 }
