@@ -49,6 +49,11 @@ public class TestMap {
 		assert !m.isAtSea(ve);
 		assert m.isAtSea("NS");
 		
+		// Distance between
+		// Bordeaux and Frankfurt, rail: 3, road: 4
+		assert m.getMinDistanceBetween("BO", "FR") == 3;
+		assert m.getMinDistanceBetween("VE", "VI") == 1;
+		
 		/*
 		 * Map Hash tests
 		 * 
