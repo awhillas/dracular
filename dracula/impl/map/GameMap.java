@@ -1,6 +1,7 @@
 package dracula.impl.map;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 import dracula.impl.*;
 import dracula.impl.ai.PathFinder;
@@ -138,6 +139,35 @@ public class GameMap implements Map {
 	}
 
 	@Override
+	public boolean isOnRoad(String location) {
+		return isLocationInMatrix(this.roads, location);
+	}
+
+	@Override
+	public boolean isOnRail(String location) {
+		return isLocationInMatrix(rails, location);
+	}
+	
+	@Override
+	public boolean isOnSeaRoute(String location) {
+		return isLocationInMatrix(seaRoutes, location);
+	}
+	
+	private boolean isLocationInMatrix(AdjacencyMatrix matrix, String location) {
+		// Location is the key of an edge?
+		boolean is = matrix.edgesAsReadonly().containsKey(location);
+		if (is)
+			return true;
+		
+		// Location is in the values of an edge which is keyed under another location?
+		for(Entry<String, List<String>> edges : matrix.edgesAsReadonly().entrySet()) {
+			if (edges.getValue().contains(location))
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean isCity(String loc) {
 		return !this.isAtSea(loc);
 	}	
@@ -177,6 +207,4 @@ public class GameMap implements Map {
     	int hash = roads.hashCode() + rails.hashCode() + seaRoutes.hashCode();
     	return Math.abs(hash);
     }
-
-
 }

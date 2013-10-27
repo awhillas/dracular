@@ -22,6 +22,9 @@ public class TestMap {
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.road)).size() == 6;
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.rail)).size() == 4;
 		assert m.getAdjacentFor(ma, EnumSet.of(TravelBy.sea)).size() == 0;
+		assert m.isOnRoad(ma);
+		assert m.isOnRail(ma);
+		assert !m.isOnSeaRoute(ma);
 		
 		// Cagliari
 		String cg = "CG";
@@ -29,13 +32,19 @@ public class TestMap {
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.road)).size() == 0;
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.rail)).size() == 0;
 		assert m.getAdjacentFor(cg, EnumSet.of(TravelBy.sea)).size() == 2;
-				
+		assert !m.isOnRoad(cg);
+		assert !m.isOnRail(cg);
+		assert m.isOnSeaRoute(cg);
+		
 		// Venice
 		String ve = "VE";
 		assert m.getAdjacentFor(ve, EnumSet.allOf(TravelBy.class)).size() == 6;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.road)).size() == 4;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.rail)).size() == 1;
 		assert m.getAdjacentFor(ve, EnumSet.of(TravelBy.sea)).size() == 1;
+		assert m.isOnRail(ve);
+		assert m.isOnRoad(ve);
+		assert m.isOnSeaRoute(ve);
 		
 		assert !m.isAtSea(ve);
 		assert m.isAtSea("NS");

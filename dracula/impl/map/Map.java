@@ -28,9 +28,9 @@ public interface Map {
 	boolean isOnRail(String location);
 
 	/**
-	* Returns true if the location is a port city
+	* Returns true if the location is either a port city or at sea
 	*/
-	boolean isPort(String location);
+	boolean isOnSeaRoute(String location);
 	
 	/**
 	 * Is the given location an inland city
