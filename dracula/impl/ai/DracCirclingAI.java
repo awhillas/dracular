@@ -10,7 +10,7 @@ import dracula.impl.*;
  * dracula to regenerate some health
  */
 public class DracCirclingAI {
-    public Move getDracBestMove(String dracLocation) {
+    public static String getDracBestMove(String dracLocation) {
         String next;
         switch (dracLocation) {
             case "CD":
@@ -38,6 +38,6 @@ public class DracCirclingAI {
                 next = "SZ";
                 break;
         }
-        return new Move(next);
+        return next;
     }
 }
