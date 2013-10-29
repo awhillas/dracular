@@ -94,9 +94,17 @@ public class AdjacencyMatrix implements Graph {
     }
 
     //returns the min distance between two nodes (stored in the edge array)
+    /*
+     * currently broken, just returns arbitrary distance of 10 if not on same adjacency matrix
+     */
     @Override
     public int getMinDist(String node1, String node2) {
-        return edges[indexOf(node1)][indexOf(node2)];
+        if ((indexOf(node1) != -1) &&(indexOf(node2) != -1)){
+            return edges[indexOf(node1)][indexOf(node2)];
+        }
+        else {
+            return 10;
+        }
     }
 
     //this is a breath first seach to determine minimum travel distance between vertices
