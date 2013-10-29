@@ -1,5 +1,7 @@
 package dracula.impl.ai;
 
+import java.util.List;
+
 import dracula.impl.*;
 
 /**
@@ -51,22 +53,25 @@ public class BoardStateScorer {
 	 *
      */
     public static double getScore(BoardState state) {
-    	
+
     	double sum = 0.0;
-    	for (int i = 0; i < state.getHunterDistances().length; i++) {
+    	int[] distancesToHunters = state.getHunterDistances();
+    	int[] huntersHealths = state.getHunterHealth();
+    	
+    	for (int i = 0; i < distancesToHunters.length; i++) {
     		// Distance.
-    		int d = state.getHunterDistances()[i];
+    		int d = distancesToHunters[i];
     		
     		// Health.
-    		int h = state.getHunterHealth()[i];			// Assuming state.getHunterDistances() has the same sequence as state.getHunterHealth()
+    		int h = huntersHealths[i];			// Assuming state.getHunterDistances() has the same sequence as state.getHunterHealth()
     		
     		sum += 1.0 / (d * h);
     	}
     	// Harmonic Mean.
-    	double mean = ((double)state.getHunterDistances().length) / sum;
+    	double mean = ((double)distancesToHunters.length) / sum;
     	return mean;
     }
-
+    
     /*
      * updates the static fields of the BoardStateScorer
      */

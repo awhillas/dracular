@@ -27,7 +27,7 @@ public class GameMap implements Map {
 	private AdjacencyMatrix rails;
 	private AdjacencyMatrix seaRoutes;
 	
-	private List<String> allStrings = new ArrayList<String>();
+	private List<String> allLocations = new ArrayList<String>();
 	private String hospital;
 	private String castle;
 	
@@ -60,17 +60,15 @@ public class GameMap implements Map {
 		
 		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedStrings));
 		
-		// Create a list of Strings.
+		// Create a list of Locations.
 		combinedStrings.addAll(inlandStrings);
 		for (String s : combinedStrings) {
-			String loc = new String(s);
-			
 			if (s.equals("JM"))
-				this.hospital = loc;
+				this.hospital = s;
 			if (s.equals("CD"))
-				this.castle = loc;
+				this.castle = s;
 			
-			allStrings.add(loc);
+			allLocations.add(s);
 		}
 	}
 	
@@ -110,27 +108,27 @@ public class GameMap implements Map {
 
 	@Override
 	public List<String> getAdjacentFor(String location, EnumSet<TravelBy> by) {
-		List<String> adjacencies = new ArrayList<String>();
+		List<String> locations = new ArrayList<String>();
+		
 		if (by.contains(TravelBy.road)) {
-			adjacencies.addAll(Arrays.asList(this.roads.adjacentVertices(location)));
+			if (location.equals(""))
+				locations.addAll(Arrays.asList(this.roads.getVertices()));
+			else
+				locations.addAll(Arrays.asList(this.roads.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.rail)) {
-			adjacencies.addAll(Arrays.asList(this.rails.adjacentVertices(location)));
+			if (location.equals(""))
+				locations.addAll(Arrays.asList(this.rails.getVertices()));
+			else
+				locations.addAll(Arrays.asList(this.rails.adjacentVertices(location)));
 		}
 		if (by.contains(TravelBy.sea)) {
-			adjacencies.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location)));
+			if (location.equals(""))
+				locations.addAll(Arrays.asList(this.seaRoutes.getVertices()));
+			else
+				locations.addAll(Arrays.asList(this.seaRoutes.adjacentVertices(location)));
 		}
-		
-		List<String> result = new ArrayList<String>();
-		for (String l : adjacencies) {
-			for (String loc : allStrings) {
-				if (loc.equals(l)) {
-					result.add(loc);
-					break;
-				}
-			}
-		}
-		return result;
+		return locations;
 	}
 
 	@Override
@@ -212,12 +210,29 @@ public class GameMap implements Map {
      * Gets the minimum distance between two locations.
      * If there are both road and rail between A and B, return the minimum of the two.
      * 
-     * TODO: Incorporate sea routes.
      */
 	@Override
 	public int getMinDistanceBetween(String loc1, String loc2) {
-		return Math.min(
-				roads.getMinDist(loc1, loc2),
-				rails.getMinDist(loc1, loc2));
+		int dRoad = roads.getMinDist(loc1, loc2);
+		int dRail = rails.getMinDist(loc1, loc2);
+		int dSea = seaRoutes.getMinDist(loc1, loc2);
+		
+		int min = 0;
+		
+		if (dRoad > 0) {
+			if (min == 0 || dRoad < min) 
+				min = dRoad;
+		}
+		if (dRail > 0) {
+			if (min == 0 || dRail < min) 
+				min = dRail;
+		}
+		
+		if (dSea > 0) {
+			if (min == 0 || dSea < min) 
+				min = dSea;
+		}
+		
+		return min;
 	}
 }

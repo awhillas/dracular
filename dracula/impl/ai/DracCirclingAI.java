@@ -11,33 +11,28 @@ import dracula.impl.*;
  */
 public class DracCirclingAI {
     public static String getDracBestMove(String dracLocation) {
-        String next;
-        switch (dracLocation) {
-            case "CD":
-                next = "KL";
-                break;
-            case "KL":
-                next = "SZ";
-                break;
-            case "SZ":
-                next = "BE";
-                break;
-            case "BE":
-                next = "SO";
-                break;
-            case "SO":
-                next = "BC";
-                break;
-            case "BC":
-                next = "GA";
-                break;
-            case "GA":
-                next = "CD";
-                break;
-            default:
-                next = "SZ";
-                break;
-        }
-        return next;
+        
+        if (dracLocation == "CD")
+        	return "KL";
+        
+        if (dracLocation == "KL")
+            return "SZ";
+                
+        if (dracLocation == "SZ")
+        	return "BE";
+                
+        if (dracLocation == "BE")
+        	return "SO";
+        
+        if (dracLocation == "SO")
+        	return "BC";
+
+        if (dracLocation == "BC")
+        	return "GA";
+                
+        if (dracLocation == "GA")
+        	return "CD";
+                
+         return "SZ";
     }
 }

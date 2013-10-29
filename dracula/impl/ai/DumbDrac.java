@@ -1,4 +1,4 @@
-package dracula.impl.ai.*;
+package dracula.impl.ai;
 
 import dracula.*;
 import dracula.impl.ai.*;
@@ -11,7 +11,7 @@ public class DumbDrac implements Dracula {
     private DumbMove move = new DumbMove("CD");
     
     public DraculaMove decideMove(){
-        this.move = DracCirclingAI.getDracBestMove(this.move.getPlayAsString());
-        return this.move.getPlayAsString();
+        this.move = new DumbMove(DracCirclingAI.getDracBestMove(this.move.getPlayAsString()));
+        return this.move;
     }
 }
