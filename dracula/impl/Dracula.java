@@ -143,9 +143,9 @@ public class Dracula implements Player {
 	 */
 	private Encounter getNewNasty(Board board) {
 		if (board.getMap().isCity(this.getLocation()) && board.getRound() % 13 == 0) {
-			return new Trap(this.location);
-		} else {
 			return new Vampire(this.location);
+		} else {
+			return new Trap(this.location);
 		}
 	}
 	
@@ -169,7 +169,6 @@ public class Dracula implements Player {
 		return -1;
 	}
 
-	
 	/**
 	 * @param args
 	 */
