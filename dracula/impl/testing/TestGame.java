@@ -1,5 +1,6 @@
 package dracula.impl.testing;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import dracula.*;
@@ -56,25 +57,25 @@ public class TestGame {
 		test.board = new Board();
 		test.hunters = test.board.getHunters();
 		test.setupGame();
+		//test.dummyTurn();
                 
                 //run for ten or so rounds
-                int i = 0;
-		while (i < 15){
-                    test.emulateGame();
-                    i++;
-                }
+        int i = 0;
+		while (i < 10){
+              test.emulateGame();
+              i++;
+       }
 	}
 	
 	public void setupGame() {
-		Map m = new GameMap();
 		
 		//Madrid, London, Belgrade, Berlin
 		//MA, LO, BE, BR
 		this.board.parsePastPlay("GMA....");
 		this.board.parsePastPlay("SLO....");
-		this.board.parsePastPlay("HPA....");
+		this.board.parsePastPlay("HBE....");
 		this.board.parsePastPlay("MBR....");
-		
+
 		String loc1 = this.hunters.get("G").getLocation();
 		String loc2 = this.hunters.get("S").getLocation();
 		String loc3 = this.hunters.get("H").getLocation();
@@ -83,8 +84,17 @@ public class TestGame {
 		//Setup worked
 		assert loc1.contains("MA");
 		assert loc2.contains("LO");
-		assert loc3.contains("PA");
+		assert loc3.contains("BE");
 		assert loc4.contains("BR");
+		for (String key : hunters.keySet()) {
+			assert hunters.get(key).getHealth() >= 0;
+		}
+		
+		System.out.println("Setup OK..");
+		System.out.println("Start: GMA... SLO... HBE... MBR...");
+	}
+	
+	public void dummyTurn() {
 		
 		//Print round 0 Setup
 		printHunterStatus();
@@ -100,52 +110,46 @@ public class TestGame {
 		String player3 = HunterMover("H", "SEARCH");
 		String player4 = HunterMover("M", "SEARCH");
 		
-		System.out.println("Turn: " + player1);
-		System.out.println("Turn: " + player2);
-		System.out.println("Turn: " + player3);
-		System.out.println("Turn: " + player4);
+		System.out.println("Turn: " + player1 + " " + player2 + " " + player3 + " " + player4);
 		
 		this.board.parsePastPlay(player1);
 		this.board.parsePastPlay(player2);
 		this.board.parsePastPlay(player3);
 		this.board.parsePastPlay(player4);
-		
-		/* 
-		 * Checks to see if the hunters executed a legal move.
-		 * The previous location that they started from should be in the adjacency 
-		 * list for their current location. Trail travel excluded
-		 
-		assert m.getAdjacentFor(hunters.get("G").getLocation(), EnumSet.of(TravelBy.road)).contains(loc1);
-		assert m.getAdjacentFor(hunters.get("S").getLocation(), EnumSet.of(TravelBy.road)).contains(loc2);
-		assert m.getAdjacentFor(hunters.get("H").getLocation(), EnumSet.of(TravelBy.road)).contains(loc3);
-		assert m.getAdjacentFor(hunters.get("M").getLocation(), EnumSet.of(TravelBy.road)).contains(loc4);
-		*/
-		
-		assert hunters.get("H").getHealth() < 9;
-		assert board.getDracula().getHealth() < 40;
-		
-		for (String key : hunters.keySet()) {
-			assert hunters.get(key).getHealth() >= 0;
-		}
 
 		//Print end of round 1
 		printHunterStatus();
 		printDraculaStatus();
 		printGameStatus();
-		
 	}
 	
 	public void emulateGame() {
 		while (this.board.getDracula().getHealth() > 0){
-			this.board.parsePastPlay(HunterMover("G", "RANDOM"));
-			this.board.parsePastPlay(HunterMover("S", "RANDOM"));
-			this.board.parsePastPlay(HunterMover("H", "SEARCH"));
-			this.board.parsePastPlay(HunterMover("M", "SEARCH"));
+			System.out.println("Round: " + this.board.getRound() + 
+								" HunterHealth: " +Arrays.toString(board.getHunterHealth())+
+								" DraculaHealth: " + board.getDracHealth());
+			
+			String player1 = HunterMover("G", "RANDOM");
+			board.parsePastPlay(player1);
+			System.out.print("Turn: " + player1);
+			
+			String player2 = HunterMover("S", "RANDOM");
+			board.parsePastPlay(player2);
+			System.out.print(" " + player2);
+			
+			String player3 = HunterMover("H", "SEARCH");
+			board.parsePastPlay(player3);
+			System.out.print(" " + player3);
+			
+			String player4 = HunterMover("M", "SEARCH");
+			board.parsePastPlay(player4);
+			System.out.print(" " + player4);
+			
 			DraculaMove move = DracMoveSearch.getBestMove(board);
-                        this.board.parsePastPlay("D" + move.getPlayAsString());
-                        printHunterStatus();
-                        printDraculaStatus();
-                        printGameStatus();
+			String player5 = "D" + move.getPlayAsString();
+            board.parsePastPlay(player5);
+            System.out.print(" " + player5);
+            System.out.println("");
 		}
 	}
 	
