@@ -72,6 +72,11 @@ public class AdjacencyMatrix implements Graph {
         }
         return count;
     }
+    
+    @Override
+    public String[] getVertices() {
+    	return this.vertices;
+    }
 
     @Override
     public String[] adjacentVertices(String v) {

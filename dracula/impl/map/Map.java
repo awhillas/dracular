@@ -8,9 +8,10 @@ import dracula.impl.*;
 public interface Map {
 	
 	/**
-	 * Gets a list of Strings that can be travelled to from the current String.
+	 * Gets a list of Strings that can be travelled to from the current location.
+	 * If location is empty, return all locations that can be travelled to.
 	 */
-	List<String> getAdjacentFor(String String, EnumSet<TravelBy> by);
+	List<String> getAdjacentFor(String location, EnumSet<TravelBy> by);
 	
 	/**
 	 * Returns true if the String is at sea
@@ -56,7 +57,6 @@ public interface Map {
      * Gets the minimum distance between two locations.
      * If there are both road and rail between A and B, return the minimum of the two.
      * 
-     * TODO: Incorporate sea routes.
      */
 	int getMinDistanceBetween(String loc1, String loc2);
 }

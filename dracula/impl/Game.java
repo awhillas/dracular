@@ -10,6 +10,7 @@ import java.util.Random;
 
 import dracula.Dracula;
 import dracula.DraculaMove;
+import dracula.impl.ai.DracMoveSearch;
 import dracula.impl.map.GameMap;
 
 /**
@@ -47,13 +48,15 @@ public class Game implements Dracula {
 	 */
 	@Override
 	public DraculaMove decideMove() {
-		
+		/*
 		Move[] options = board.getLegalMoves();
 		
 		Random random = new Random();
 		int next = random.nextInt(options.length);
 		
 		return options[next];	// doesn't matter what location is here.
+		*/
+		return DracMoveSearch.getBestMove(board);
 	}
 
 	

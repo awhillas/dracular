@@ -6,9 +6,12 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import dracula.impl.ai.BoardStateScorer;
+import dracula.impl.ai.DracMoveSearch;
 import dracula.impl.map.*;
 import dracula.*;
 
@@ -57,9 +60,9 @@ public class Board implements BoardState {
 		Board newBoard = new Board();
 		newBoard.setScore(this.getScore());
 		newBoard.setTurn(this.getTurn());
-                newBoard.dracula = this.getDracula().clone();
-                newBoard.players = new HashMap<String, Player>();
-                newBoard.players.put("G", this.players.get("G").clone()); // Lord Godalming
+        newBoard.dracula = this.getDracula().clone();
+        newBoard.players = new HashMap<String, Player>();
+        newBoard.players.put("G", this.players.get("G").clone()); // Lord Godalming
 		newBoard.players.put("S", this.players.get("G").clone()); // Dr Seward
 		newBoard.players.put("H", this.players.get("G").clone()); // Van Helsing
 		newBoard.players.put("M", this.players.get("G").clone()); // Mina Harker
@@ -83,8 +86,36 @@ public class Board implements BoardState {
 		String id = pastPlay.substring(0, 1);
 		players.get(id).parsePastPlay(pastPlay, this);
 		turn++;
+		
+		// After all hunters' initial locations are known, set the dracula's initial location.
+		if (turn == 4) {
+			setDraculaStartingLocation();
+		}
 	}
 
+	private void setDraculaStartingLocation() {
+		double bestScore = 0.0;
+		String bestLocation = "";
+		
+		List<String> allLocations = map.getAdjacentFor("", EnumSet.of(TravelBy.road, TravelBy.rail));
+		for (String loc : allLocations) {
+			if (!loc.equals("CG") && !loc.equals(players.get("G").getLocation()) && !loc.equals(players.get("S").getLocation())
+			    	&& !loc.equals(players.get("H").getLocation()) && !loc.equals(players.get("M").getLocation())) 
+			{
+				this.dracula.setLocation(loc);
+				
+				double score = BoardStateScorer.getScore(this);
+				if (bestScore == 0.0 || score > bestScore) {
+					bestScore = score;
+					bestLocation = loc;
+				}
+			}
+		}
+		
+		// Found best.
+		this.dracula.setLocation(bestLocation);
+	}
+	
 	public Dracula getDracula() {
 		return this.dracula;
 	}
@@ -147,20 +178,21 @@ public class Board implements BoardState {
 		}
 		return options.toArray(new Move[options.size()]);
 	}
-
+	
 	@Override
 	public int[] getHunterDistances() {
 		
 		String dLoc = this.dracula.getLocation();
-                String[] pLoc = new String[4];
-                pLoc[0] = players.get("G").getLocation();
-                pLoc[1] = players.get("S").getLocation();
-                pLoc[2] = players.get("H").getLocation();
-                pLoc[3] = players.get("M").getLocation();
+        String[] pLoc = new String[4];
+        pLoc[0] = players.get("G").getLocation();
+        pLoc[1] = players.get("S").getLocation();
+        pLoc[2] = players.get("H").getLocation();
+        pLoc[3] = players.get("M").getLocation();
+        
 		int[] distances = new int[4];
 		for (int i = 0; i < pLoc.length; i ++){
-                    distances [i] = map.getMinDistanceBetween(dLoc, pLoc[i]);
-                }
+            distances [i] = map.getMinDistanceBetween(dLoc, pLoc[i]);
+        }
 		return distances;
 	}
 	

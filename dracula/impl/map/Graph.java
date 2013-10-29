@@ -25,6 +25,11 @@ public interface Graph {
 	 * @return	Array of Vertices adjacent (connected) to v
 	 */
 	public String[] adjacentVertices(String v);
+	
+	/**
+	 * Return all the vertices in the matrix.
+	 */
+	public String[] getVertices();
 
 	/**
 	 * @param 	v	Vertex
