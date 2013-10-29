@@ -24,6 +24,17 @@ public class Hunter implements Player {
 	 * Hunter is automatically teleported to hospital if it drops below 1
 	 * Otherwise it is limited to 9
 	 */
+	 
+	 /*
+         * copy constructor
+         */
+        public Hunter clone(){
+            Hunter clone = new Hunter(this.name, this.number);
+            clone.health = this.health;
+            clone.location = this.location;
+            return clone;
+        }
+        
 	@Override
 	public void addToHealth(int amount) {
 		this.health += amount;
