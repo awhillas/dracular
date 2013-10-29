@@ -30,6 +30,21 @@ public class DraculaTrail {
 		this.trail = new LinkedList<Move>();
 		this.nasties = new LinkedList<Encounter>();
 	}
+	/*
+         * copy constructor
+         */
+        public DraculaTrail clone(){
+            DraculaTrail clone = new DraculaTrail();
+            clone.nasties = new LinkedList<Encounter>();
+            for (Encounter e : this.nasties){
+                clone.nasties.add(e);
+            }
+            clone.trail = new LinkedList<Move>();
+            for (Move m : this.trail){
+                clone.trail.add(m);
+            }
+            return clone;
+        }
 	
 	/**
 	 * Add a move and an Encouter to the trail.
