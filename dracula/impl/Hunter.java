@@ -38,7 +38,7 @@ public class Hunter implements Player {
 	@Override
 	public void addToHealth(int amount) {
 		this.health += amount;
-		if (this.health > 9) 
+		if (this.health > 9 || this.health < 1) 
 			this.health = 9;
 	}
 	
@@ -123,6 +123,10 @@ public class Hunter implements Player {
 		if (board.getDracula().getLocation().equals(location)) {
 			board.getDracula().addToHealth(-Encounter.HUNTER_COST);
 			this.addToHealth(-Encounter.DRACULA_COST);
+			if (this.getHealth() <= 0) {
+				this.location = GameMap.HOSPITAL;
+				return;
+			}
 		}
 	}
 

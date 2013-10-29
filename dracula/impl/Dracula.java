@@ -130,6 +130,8 @@ public class Dracula implements Player {
 	public void makeMove(Move move, Board board) {
 		this.trail.addMove(move, this.getNewNasty(board));
 		this.location = move.getLocation();
+		if (this.location.contains("CD") || this.location.contains("TP"))
+			this.addToHealth(10);
 	}
 
 	/**

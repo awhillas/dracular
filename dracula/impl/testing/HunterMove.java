@@ -81,16 +81,17 @@ public class HunterMove {
 			Random random = new Random();
 			newLocation = options.get(random.nextInt(options.size()));
 		}
-		
 		this.encounters = getEncounters(newLocation);
+		
+		if (hunter.getHealth() < 1) {
+			newLocation = "JM";
+		}
 		return hunter.getName()+newLocation+encounters;
 	}
 	
-
-	public Player getHunter() {
-		return hunter;
-	}
-	
+	/*
+	 * 
+	 */
 	public String hunterSearchMove() {
             if (hunter.getLocation().equals(board.getDracula().getLocation())){
                 return hunter.getLocation();
@@ -108,18 +109,16 @@ public class HunterMove {
 		DraculaTrail trail = board.getDracula().getTrail();
 		if (trail.getLength() > 0) {
 			Encounter[] nasties = trail.getEncountersAt(location);
-			if (nasties.length > 0) {
-				for (Encounter e : nasties) {
-					if (e.isTrap()) {
-						if (events[0].contains("T")) {
-							events[1] = "T";
-						} else {
-							events[0] = "T";
-						}
-					} else if (!e.isTrap()) {
-						events[2] = "V";
-					} 
-				}
+			for (Encounter e : nasties) {
+				if (e.isTrap()) {
+					if (events[0].contains("T")) {
+						events[1] = "T";
+					} else {
+						events[0] = "T";
+					}
+				} else if (!e.isTrap()) {
+					events[2] = "V";
+				} 
 			}
 		}
 		if (board.getDracula().getLocation().equals(location)) {
@@ -131,18 +130,4 @@ public class HunterMove {
 
 		return actions;
 	}
-	
-	public String Encounters() {
-		return this.encounters;
-	}
-	
-	
-	public String insults() {
-		String messages = "";
-		
-		return messages;
-	}
-	
-	
- 	
 }

@@ -7,6 +7,7 @@ import dracula.*;
 import dracula.impl.*;
 import dracula.impl.map.GameMap;
 import dracula.impl.map.Map;
+import dracula.impl.ai.DracCirclingAI;
 import dracula.impl.ai.DracMoveSearch;
 
 
@@ -14,6 +15,7 @@ public class TestGame {
 	private Board board;
 	private String[] messages = null;
 	private HashMap<String, Player> hunters;
+	private int gameScore;
 	/*
 	 * The MapData has to keep track of the various states:
 	 * Hunter positions 
@@ -68,6 +70,8 @@ public class TestGame {
 	}
 	
 	public void setupGame() {
+		
+		this.gameScore =  366;
 		
 		//Madrid, London, Belgrade, Berlin
 		//MA, LO, BE, BR
@@ -124,10 +128,11 @@ public class TestGame {
 	}
 	
 	public void emulateGame() {
-		while (this.board.getDracula().getHealth() > 0){
+		while (this.board.getDracula().getHealth() > 0 && this.gameScore > 0){
 			System.out.println("Round: " + this.board.getRound() + 
 								" HunterHealth: " +Arrays.toString(board.getHunterHealth())+
-								" DraculaHealth: " + board.getDracHealth());
+								" DraculaHealth: " + board.getDracHealth() +
+								" Score: " +gameScore);
 			
 			String player1 = HunterMover("G", "RANDOM");
 			board.parsePastPlay(player1);
@@ -137,19 +142,39 @@ public class TestGame {
 			board.parsePastPlay(player2);
 			System.out.print(" " + player2);
 			
-			String player3 = HunterMover("H", "SEARCH");
+			String player3 = HunterMover("H", "RANDOM");
 			board.parsePastPlay(player3);
 			System.out.print(" " + player3);
 			
 			String player4 = HunterMover("M", "SEARCH");
 			board.parsePastPlay(player4);
 			System.out.print(" " + player4);
-			
+
 			DraculaMove move = DracMoveSearch.getBestMove(board);
 			String player5 = "D" + move.getPlayAsString();
             board.parsePastPlay(player5);
             System.out.print(" " + player5);
             System.out.println("");
+            scoring(player5);
+		}
+		System.out.println("GAME OVER!");
+		System.out.println("Round: " + this.board.getRound() + 
+				" HunterHealth: " +Arrays.toString(board.getHunterHealth())+
+				" DraculaHealth: " + board.getDracHealth() +
+				" Score: " +gameScore);
+		System.exit(0);
+	}
+	
+	public void scoring(String play) {
+		this.gameScore--;
+		int[] hunterHealth = board.getHunterHealth();
+		for (int health : hunterHealth) {
+			if (health < 1) {
+				gameScore -= 6;
+			}
+		}
+		if (play.substring(3).contains("V")) {
+			gameScore -= 13;
 		}
 	}
 	
