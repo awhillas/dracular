@@ -129,6 +129,7 @@ public class Dracula implements Player {
 	@Override
 	public void makeMove(Move move, Board board) {
 		this.trail.addMove(move, this.getNewNasty(board));
+		this.location = move.getLocation();
 	}
 
 	/**
