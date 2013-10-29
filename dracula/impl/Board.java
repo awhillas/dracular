@@ -52,12 +52,18 @@ public class Board implements BoardState {
 	/**
 	 * Copy constructor
 	 */
-	public static Board makeBoard(Board b) {
+	@Override
+	public  Board clone() {
 		Board newBoard = new Board();
-		
-		newBoard.setScore(b.getScore());
-		newBoard.setTurn(b.getTurn());
-		
+		newBoard.setScore(this.getScore());
+		newBoard.setTurn(this.getTurn());
+                newBoard.dracula = this.getDracula().clone();
+                newBoard.players = new HashMap<String, Player>();
+                newBoard.players.put("G", this.players.get("G").clone()); // Lord Godalming
+		newBoard.players.put("S", this.players.get("G").clone()); // Dr Seward
+		newBoard.players.put("H", this.players.get("G").clone()); // Van Helsing
+		newBoard.players.put("M", this.players.get("G").clone()); // Mina Harker
+		newBoard.players.put("D", newBoard.dracula);
 		return newBoard;
 	}
 	
@@ -145,15 +151,16 @@ public class Board implements BoardState {
 	@Override
 	public int[] getHunterDistances() {
 		
-		String dLoc = this.dracula.getLocation();		
-		int[] distances = new int[players.size()];
-
-		int i = 0;
-		while (players.entrySet().iterator().hasNext()) {
-			String hunterLoc = players.entrySet().iterator().next().getValue().getLocation();
-			distances[i] = map.getMinDistanceBetween(dLoc, hunterLoc);
-		}
-		
+		String dLoc = this.dracula.getLocation();
+                String[] pLoc = new String[4];
+                pLoc[0] = players.get("G").getLocation();
+                pLoc[1] = players.get("S").getLocation();
+                pLoc[2] = players.get("H").getLocation();
+                pLoc[3] = players.get("M").getLocation();
+		int[] distances = new int[4];
+		for (int i = 0; i < pLoc.length; i ++){
+                    distances [i] = map.getMinDistanceBetween(dLoc, pLoc[i]);
+                }
 		return distances;
 	}
 	
@@ -163,8 +170,13 @@ public class Board implements BoardState {
 
 	@Override
 	public BoardState getNextState(Move dracMove, Move[] hunterMoves) {
-		// TODO Auto-generated method stub
-		return null;
+		Board next = this.clone();
+                next.dracula.makeMove(dracMove, next);
+                next.players.get("G").makeMove(hunterMoves[0], next);
+                next.players.get("S").makeMove(hunterMoves[1], next);
+                next.players.get("H").makeMove(hunterMoves[2], next);
+                next.players.get("M").makeMove(hunterMoves[3], next);
+		return next;
 	}
 
 	/**
@@ -198,11 +210,14 @@ public class Board implements BoardState {
 				if(map.isOnRail(h.getLocation()) && railHops > 0) {
 					// Breadth First Depth Limited Search of the rail network.
 					Set<String> railCities = new HashSet<String>(map.getAdjacentFor(h.getLocation(), EnumSet.of(TravelBy.rail)));
-					Set<String> frontier = railCities;
-					Set<String> newFrontier = new HashSet<String>();
-					
+					Set<String> frontier = new HashSet<String>();
+                                        for (String rc :railCities){
+                                            frontier.add(rc);
+                                        }
+                                        Set<String> newFrontier = new HashSet<String>();
 					for(int i = 1; i < railHops; i++) {	// depth
 						for(String city : frontier) {
+                                                        newFrontier = new HashSet<String>();
 							newFrontier.addAll(map.getAdjacentFor(city, EnumSet.of(TravelBy.rail)));
 							newFrontier.removeAll(railCities);
 						}
