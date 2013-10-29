@@ -96,14 +96,12 @@ public class Board implements BoardState {
 	private void setDraculaStartingLocation() {
 		double bestScore = 0.0;
 		String bestLocation = "";
-		String original = this.dracula.getLocation();
 		
 		List<String> allLocations = map.getAdjacentFor("", EnumSet.of(TravelBy.road, TravelBy.rail));
 		for (String loc : allLocations) {
 			if (!loc.equals("CG") && !loc.equals(players.get("G").getLocation()) && !loc.equals(players.get("S").getLocation())
 			    	&& !loc.equals(players.get("H").getLocation()) && !loc.equals(players.get("M").getLocation())) 
 			{
-				// Temporarily set dracula's location
 				this.dracula.setLocation(loc);
 				
 				double score = BoardStateScorer.getScore(this);
@@ -111,11 +109,10 @@ public class Board implements BoardState {
 					bestScore = score;
 					bestLocation = loc;
 				}
-				
-				this.dracula.setLocation(original);
 			}
 		}
 		
+		// Found best.
 		this.dracula.setLocation(bestLocation);
 	}
 	
