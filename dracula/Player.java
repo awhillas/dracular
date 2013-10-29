@@ -17,4 +17,5 @@ public interface Player {
 	public String getLocation();
 	public String getName();
 	public int getNumber();
+        public Player clone();
 }
