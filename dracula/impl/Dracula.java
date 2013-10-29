@@ -26,6 +26,16 @@ public class Dracula implements Player {
  		this.location = "BC";
 	}
 	
+	/*
+         * copy constructor
+         */
+        public Dracula clone(){
+            Dracula clone = new Dracula();
+            clone.blood_points = this.blood_points;
+            clone.location = this.location;
+            clone.trail = this.trail.clone();
+            return clone;
+        }
 	/**
 	 * "Dracula may make a HIDE move and remain in the city he is currently in for a 
 	 * second turn. He cannot HIDE at sea. Dracula can only have one HIDE move 
