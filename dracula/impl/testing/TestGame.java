@@ -59,7 +59,7 @@ public class TestGame {
                 
                 //run for ten or so rounds
                 int i = 0;
-		while (i < 10){
+		while (i < 15){
                     test.emulateGame();
                     i++;
                 }
@@ -72,7 +72,7 @@ public class TestGame {
 		//MA, LO, BE, BR
 		this.board.parsePastPlay("GMA....");
 		this.board.parsePastPlay("SLO....");
-		this.board.parsePastPlay("HBE....");
+		this.board.parsePastPlay("HPA....");
 		this.board.parsePastPlay("MBR....");
 		
 		String loc1 = this.hunters.get("G").getLocation();
@@ -83,7 +83,7 @@ public class TestGame {
 		//Setup worked
 		assert loc1.contains("MA");
 		assert loc2.contains("LO");
-		assert loc3.contains("BE");
+		assert loc3.contains("PA");
 		assert loc4.contains("BR");
 		
 		//Print round 0 Setup
