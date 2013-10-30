@@ -59,4 +59,6 @@ public interface Map {
      * 
      */
 	int getMinDistanceBetween(String loc1, String loc2);
+        
+        List<String> getCities();
 }
