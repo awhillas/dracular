@@ -23,7 +23,7 @@ public class Dracula implements Player {
 	public Dracula () {
  		this.blood_points = 40;
  		this.trail = new DraculaTrail();
- 		this.location = "";
+ 		this.location = "nowhere";
 	}
 	
 	public void setLocation(String location) {
