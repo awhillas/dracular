@@ -42,10 +42,6 @@ public class Game implements Dracula {
 	 */
 	@Override
 	public DraculaMove decideMove() {
-		// First move?
-		if (board.getTurn() == 4)
-			return new Move(board.getDracula().getLocation());
-		
 		return DracMoveSearch.getBestMove(board);
 	}
 
