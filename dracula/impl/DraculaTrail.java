@@ -132,7 +132,7 @@ public class DraculaTrail {
 	public ArrayList<Move> getDoubleBackMoves() {
 		ArrayList<Move> out = new ArrayList<Move>();
 		for (int i = 0; i < this.getLength(); i++) {
-			out.add(new Move("D"+i, trail.get(i).getLocation()));
+			out.add(new Move("D"+(i+1), trail.get(i).getLocation()));
 		}
 		return out;
 	}
