@@ -85,21 +85,6 @@ public class DracMoveSearch {
         */
     }
     
-    public static Move firstMove(BoardState state){
-        List<String> options = state.getMap().getCities();
-        options.remove("JM");
-        String bestCity = options.get(0);
-        state.getDracula().setLocation(bestCity);
-        double bestScore = BoardStateScorer.getScore(state);
-        for (String city : options){
-            state.getDracula().setLocation(city);
-            if (BoardStateScorer.getScore(state) > bestScore){
-                bestScore = BoardStateScorer.getScore(state);
-                bestCity = city;
-            }
-        }
-        return new Move(bestCity);
-    }
 
     /*
      * initialise the move combination (a set of indices for the available moves for each of the players
