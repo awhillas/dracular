@@ -108,7 +108,7 @@ public class Dracula implements Player {
 		Move move = null;
 		if (action.equals("HI")) {
 			move = new Move(action, location);
-		} else if(action.matches("D[0-5]")) {
+		} else if(action.matches("D[1-5]")) {
 			int back = Integer.parseInt(action.substring(1));
 			move = trail.getMoveAt(back);
 		} else if(action.equals("TP")) {
