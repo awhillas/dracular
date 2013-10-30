@@ -44,4 +44,6 @@ public interface BoardState {
     public Dracula getDracula();
     
     public Map getMap();
+    
+    public int getTurn();
 }
