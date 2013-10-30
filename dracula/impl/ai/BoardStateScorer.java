@@ -53,7 +53,6 @@ public class BoardStateScorer {
 	 *
      */
     public static double getScore(BoardState state) {
-
     	double sum = 0.0;
     	int[] distancesToHunters = state.getHunterDistances();
     	int[] huntersHealths = state.getHunterHealth();
@@ -65,7 +64,7 @@ public class BoardStateScorer {
     		// Health.
     		int h = huntersHealths[i];			// Assuming state.getHunterDistances() has the same sequence as state.getHunterHealth()
     		
-    		sum += 1.0 / (d * h);
+    		sum += 1.0 / (1 + (d * (h/9)));
     	}
     	// Harmonic Mean.
     	double mean = ((double)distancesToHunters.length) / sum;
