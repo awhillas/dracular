@@ -120,6 +120,17 @@ public class DraculaTrail {
 		}
 		return false;	
 	}
+	
+	/*
+         * returns list of locations in trail
+         */
+        public ArrayList<String> getLocations(){
+            ArrayList<String> locs = new ArrayList<String>();
+            for(Move move : trail) {
+			locs.add(move.getLocation());
+		}
+            return locs;
+        }
 
 	public boolean hasDoubledBack() {
 		for(int i = 1; i < TRAIL_LENGTH + 1; i++) {
