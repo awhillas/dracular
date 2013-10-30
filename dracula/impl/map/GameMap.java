@@ -200,7 +200,7 @@ public class GameMap implements Map {
                 return PathFinder.getPath(start, finish, avoid, seaRoutes);
 
             default:
-                return new ArrayList<String>();
+                return PathFinder.getPath(start, finish, avoid, roadAndSea);
         }
     }
     
