@@ -26,7 +26,7 @@ import dracula.DraculaMove;
 public class DraculaRunner {
 
    public static void main (String[] args) {
-
+	   
       Exception failed = null;
       //disable stdout
       ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -3,15 +3,9 @@
  */
 package dracula.impl;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
-
 import dracula.Dracula;
 import dracula.DraculaMove;
 import dracula.impl.ai.DracMoveSearch;
-import dracula.impl.map.GameMap;
 
 /**
  * This class is the central class for the Dracular AI.

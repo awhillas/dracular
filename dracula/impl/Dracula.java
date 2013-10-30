@@ -51,10 +51,7 @@ public class Dracula implements Player {
 	 * @return	true if Dracula can make a HIDE move, false otherwise.
 	 */
 	public boolean canHide() {
-		if(trail.hasHidden()) {
-			return false;
-		}
-		return true;
+		return !trail.hasHidden();
 	}
 	
 	/**
@@ -69,9 +66,7 @@ public class Dracula implements Player {
 	 * @return	true if can make a double back move, false otherwise.
 	 */
 	public boolean canDoubleBack() {
-		if (trail.hasDoubleBack())
-			return false;
-		return true;
+		return !trail.hasDoubledBack();
 	}
 	
 	public boolean canTeleport() {
