@@ -42,14 +42,10 @@ public class Game implements Dracula {
 	 */
 	@Override
 	public DraculaMove decideMove() {
-		/*
-		Move[] options = board.getLegalMoves();
+		// First move?
+		if (board.getTurn() == 4)
+			return new Move(board.getDracula().getLocation());
 		
-		Random random = new Random();
-		int next = random.nextInt(options.length);
-		
-		return options[next];	// doesn't matter what location is here.
-		*/
 		return DracMoveSearch.getBestMove(board);
 	}
 
