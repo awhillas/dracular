@@ -30,7 +30,7 @@ public class DraculaRunner {
       Exception failed = null;
       //disable stdout
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//      System.setOut(new PrintStream(baos));
+      System.setOut(new PrintStream(baos));
 
       // Read in state from stdin
       String pastPlays = "";

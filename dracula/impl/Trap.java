@@ -28,4 +28,9 @@ public class Trap implements Encounter {
 	public boolean isTrap() {
 		return true;
 	}
+	
+	@Override
+	public String toString() {
+		return "Trap(" + location + ")";
+	}
 }

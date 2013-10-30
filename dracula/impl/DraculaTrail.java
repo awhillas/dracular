@@ -5,6 +5,7 @@ package dracula.impl;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+
 import dracula.Encounter;
 
 /**
@@ -18,7 +19,7 @@ import dracula.Encounter;
  */
 public class DraculaTrail {
 
-	public static int TRAIL_LENGTH = 5;
+	public static int TRAIL_LENGTH = 6;
 	
 	private LinkedList<Move> trail;
 	private LinkedList<Encounter> nasties;
@@ -31,20 +32,21 @@ public class DraculaTrail {
 		this.nasties = new LinkedList<Encounter>();
 	}
 	/*
-         * copy constructor
-         */
-        public DraculaTrail clone(){
-            DraculaTrail clone = new DraculaTrail();
-            clone.nasties = new LinkedList<Encounter>();
-            for (Encounter e : this.nasties){
-                clone.nasties.add(e);
-            }
-            clone.trail = new LinkedList<Move>();
-            for (Move m : this.trail){
-                clone.trail.add(m);
-            }
-            return clone;
-        }
+	 * copy constructor
+	 * TODO: clone is not a good word for this :-(
+	 */
+	public DraculaTrail clone(){
+	    DraculaTrail clone = new DraculaTrail();
+	    clone.nasties = new LinkedList<Encounter>();
+	    for (Encounter e : this.nasties){
+	        clone.nasties.add(e);
+	    }
+	    clone.trail = new LinkedList<Move>();
+	    for (Move m : this.trail){
+	        clone.trail.add(m);
+	    }
+	    return clone;
+	}
 	
 	/**
 	 * Add a move and an Encouter to the trail.
@@ -70,6 +72,8 @@ public class DraculaTrail {
 	}
 	
 	public int getLength() {
+		return trail.size();
+		/*
 		int count = 0;
 		for(Move move : trail) {
 			if (move != null) {
@@ -77,6 +81,7 @@ public class DraculaTrail {
 			}
 		}
 		return count;
+		*/
 	}
 	
 	/**
@@ -95,7 +100,7 @@ public class DraculaTrail {
 	}
 	
 	public boolean disarm(Encounter disarmed) {
-		return this.nasties.remove(disarmed);
+		return this.nasties.removeFirstOccurrence(disarmed);
 	}
 	
 	public boolean containsMove(String action) {
@@ -131,16 +136,27 @@ public class DraculaTrail {
 	
 	public ArrayList<Move> getDoubleBackMoves() {
 		ArrayList<Move> out = new ArrayList<Move>();
-		for (int i = 0; i < this.getLength(); i++) {
-			out.add(new Move("D"+(i+1), trail.get(i).getLocation()));
+		if(!this.hasDoubledBack()) {
+			for (int i = 0; i < this.getLength(); i++) {
+				out.add(new Move("D"+i, getMoveAt(i).getLocation()));
+			}
 		}
 		return out;
 	}
 
 	/**
-	 * Return the move at the given move index (from 1-5)
+	 * Return the move at the given move index (from 0-5)
 	 */
 	public Move getMoveAt(int index) {
-		return trail.get(index - 1);
+		if(index >= 0 && index < trail.size()) {
+			// Because the LinkedList adds to the end and we want to lookup 
+			// with the index inverted i.e. zero should always be the last move
+			return trail.get(trail.size() - index - 1);
+		}
+		return null;
+	}
+	
+	public String toString() {
+		return "Trail:"+this.trail+"(Traps:"+this.nasties+")";
 	}
 }

@@ -23,4 +23,5 @@ public interface Encounter {
 	
 	public String getLocation();
 	public boolean isTrap();
+	public String toString();
 }

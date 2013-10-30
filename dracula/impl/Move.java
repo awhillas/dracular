@@ -69,4 +69,12 @@ public class Move implements DraculaMove {
 		int next = random.nextInt(quotes.length);
 		return quotes[next];
 	}
+	
+	public String toString() {
+		if (this.action == this.location) {
+			return "Move(" + this.action + ")";
+		} else {
+			return "Move(" + this.action + ","+this.location+")";
+		}
+	}
 }

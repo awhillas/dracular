@@ -19,4 +19,9 @@ public class Vampire implements Encounter {
 	public boolean isTrap() {
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "Vampire(" + location + ")";
+	}
 }
