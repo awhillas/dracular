@@ -60,9 +60,9 @@ public class Board implements BoardState {
 		Board newBoard = new Board();
 		newBoard.setScore(this.getScore());
 		newBoard.setTurn(this.getTurn());
-        newBoard.dracula = this.getDracula().clone();
-        newBoard.players = new HashMap<String, Player>();
-        newBoard.players.put("G", this.players.get("G").clone()); // Lord Godalming
+                newBoard.dracula = this.getDracula().clone();
+                newBoard.players = new HashMap<String, Player>();
+                newBoard.players.put("G", this.players.get("G").clone()); // Lord Godalming
 		newBoard.players.put("S", this.players.get("G").clone()); // Dr Seward
 		newBoard.players.put("H", this.players.get("G").clone()); // Van Helsing
 		newBoard.players.put("M", this.players.get("G").clone()); // Mina Harker
@@ -88,11 +88,12 @@ public class Board implements BoardState {
 		turn++;
 		
 		// After all hunters' initial locations are known, set the dracula's initial location.
-		if (turn == 4) {
+		/*if (turn == 4) {
 			setDraculaStartingLocation();
 		}
+                */
 	}
-
+        /*
 	private void setDraculaStartingLocation() {
 		double bestScore = 0.0;
 		String bestLocation = "";
@@ -115,11 +116,13 @@ public class Board implements BoardState {
 		// Found best.
 		this.dracula.setLocation(bestLocation);
 	}
+        */
 	
+        @Override
 	public Dracula getDracula() {
 		return this.dracula;
 	}
-	
+	 @Override
 	public Map getMap()
 	{
 		return this.map;
@@ -182,7 +185,7 @@ public class Board implements BoardState {
 	@Override
 	public int[] getHunterDistances() {
 		
-		String dLoc = this.dracula.getLocation();
+        String dLoc = this.dracula.getLocation();
         String[] pLoc = new String[4];
         pLoc[0] = players.get("G").getLocation();
         pLoc[1] = players.get("S").getLocation();
