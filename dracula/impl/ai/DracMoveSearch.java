@@ -28,9 +28,32 @@ public class DracMoveSearch {
     
     public static Move getBestMove(BoardState state) {
         //check if first move
-        if (state.getDracula().getLocation().equals("nowhere")){
-            return firstMove(state);
+        List<String> options;
+        if (state.getTurn() == 4){
+          options  = state.getMap().getCities();
         }
+        else {
+            options = new ArrayList<String>();
+            Move[] dracMoves = state.getLegalMoves();
+            for (int i = 0; i < dracMoves.length; i++){
+                options.add(dracMoves[i].getLocation());
+            }
+        }
+        options.remove("JM");
+        String bestCity = options.get(0);
+        state.getDracula().setLocation(bestCity);
+        double bestScore = BoardStateScorer.getScore(state);
+        for (String city : options){
+            state.getDracula().setLocation(city);
+            if (BoardStateScorer.getScore(state) > bestScore){
+                bestScore = BoardStateScorer.getScore(state);
+                bestCity = city;
+            }
+        }
+        return new Move(bestCity);
+        
+        
+        /*
         dracMoves = state.getLegalMoves();
         hunterMoves =  state.getHunterMoves();
 
@@ -59,6 +82,7 @@ public class DracMoveSearch {
             }
         }
         return bestMove;
+        */
     }
     
     public static Move firstMove(BoardState state){
