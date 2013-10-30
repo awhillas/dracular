@@ -27,19 +27,32 @@ public class DracMoveSearch {
 
     
     public static Move getBestMove(BoardState state) {
+        List<String> options = new ArrayList<String>();
         //check if first move
-        List<String> options;
         if (state.getTurn() == 4){
           options  = state.getMap().getCities();
         }
-        else {
-            options = new ArrayList<String>();
+        //if health below certain level then go to castle dracula
+        else if (state.getDracHealth() < 21){
+            String dLoc = state.getDracula().getLocation();
+            ArrayList<String> avoid = state.getDracula().getTrail().getLocations();
+            List<String> path = state.getMap().getRoute(dLoc, "CD", avoid, TravelBy.roadAndSea);
+            if (path.size() >= 2){
+                options = new ArrayList<String>();
+                options.add(path.get(1));
+            }
+        }
+        //check if anything has been added to options
+        if (options.size() == 0) {
             Move[] dracMoves = state.getLegalMoves();
             for (int i = 0; i < dracMoves.length; i++){
                 options.add(dracMoves[i].getPlayAsString());
             }
         }
+        //drac can't go to JM
         options.remove("JM");
+        
+        //search for best move in options
         String bestCity = options.get(0);
         state.getDracula().setLocation(bestCity);
         double bestScore = BoardStateScorer.getScore(state);
