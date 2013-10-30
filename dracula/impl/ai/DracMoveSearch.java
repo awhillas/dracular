@@ -36,7 +36,7 @@ public class DracMoveSearch {
             options = new ArrayList<String>();
             Move[] dracMoves = state.getLegalMoves();
             for (int i = 0; i < dracMoves.length; i++){
-                options.add(dracMoves[i].getLocation());
+                options.add(dracMoves[i].getPlayAsString());
             }
         }
         options.remove("JM");
