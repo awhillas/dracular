@@ -26,6 +26,7 @@ public class GameMap implements Map {
 	private AdjacencyMatrix roads;
 	private AdjacencyMatrix rails;
 	private AdjacencyMatrix seaRoutes;
+        private AdjacencyMatrix roadAndSea;
 	
 	private List<String> allLocations = new ArrayList<String>();
 	private String hospital;
@@ -59,6 +60,9 @@ public class GameMap implements Map {
 		combinedStrings.toArray(nodes);
 		
 		this.seaRoutes = new AdjacencyMatrix(nodes, loadMap(GameMapStrings.seaMap(), combinedStrings));
+                
+                //combined adjacency matrix for road and sea
+                this.roadAndSea = AdjacencyMatrix.combine(roads, seaRoutes);
 		
 		// Create a list of Locations.
 		combinedStrings.addAll(inlandStrings);
@@ -213,7 +217,7 @@ public class GameMap implements Map {
      */
 	@Override
 	public int getMinDistanceBetween(String loc1, String loc2) {
-		int dRoad = roads.getMinDist(loc1, loc2);
+		/*int dRoad = roads.getMinDist(loc1, loc2);
 		int dRail = rails.getMinDist(loc1, loc2);
 		int dSea = seaRoutes.getMinDist(loc1, loc2);
 		
@@ -234,5 +238,13 @@ public class GameMap implements Map {
 		}
 		
 		return min;
+                */
+                return this.roadAndSea.getMinDist(loc1, loc2);
 	}
+        
+        @Override 
+        public List<String> getCities(){
+            return this.inlandStrings;
+        }
+        
 }
