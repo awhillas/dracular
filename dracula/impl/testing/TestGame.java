@@ -111,8 +111,8 @@ public class TestGame {
 		//Run the first round moves for each hunter using a type of dummy AI
 		String player1 = HunterMover("G", "RANDOM");
 		String player2 = HunterMover("S", "RANDOM");
-		String player3 = HunterMover("H", "SEARCH");
-		String player4 = HunterMover("M", "SEARCH");
+		String player3 = HunterMover("H", "RANDOM");
+		String player4 = HunterMover("M", "RANDOM");
 		
 		System.out.println("Turn: " + player1 + " " + player2 + " " + player3 + " " + player4);
 		
@@ -146,7 +146,7 @@ public class TestGame {
 			board.parsePastPlay(player3);
 			System.out.print(" " + player3);
 			
-			String player4 = HunterMover("M", "SEARCH");
+			String player4 = HunterMover("M", "RANDOM");
 			board.parsePastPlay(player4);
 			System.out.print(" " + player4);
 
