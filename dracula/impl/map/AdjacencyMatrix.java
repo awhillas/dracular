@@ -30,6 +30,57 @@ public class AdjacencyMatrix implements Graph {
         this.edges = edges;
         this.updateMinDistances();
     }
+    
+    /*
+     * combine two adjacency matrixes - primarily for min dist calculation
+     * can also be used for search
+     */
+    public static AdjacencyMatrix combine(AdjacencyMatrix one, AdjacencyMatrix two){
+        int overlap = 0;
+        ArrayList<Integer> uniques = new ArrayList<Integer>();
+        for (int i = 0; i < one.vertices.length; i++){
+            for (int j = 0; j < two.vertices.length; j++){
+                if (one.vertices[i].equals(two.vertices[j])){
+                    overlap++;
+                }
+                else {
+                    uniques.add(j);
+                }
+            }
+        }
+        
+        int combSize = one.vertices.length + two.vertices.length - overlap;
+        String[] vertices = new String[combSize];
+        int[][] edges = new int[combSize][combSize];
+        
+        //top right corner of array is same as one
+        for (int i = 0; i < one.vertices.length; i++){
+            vertices[i] = one.vertices[i];
+            for (int j = 0; j < one.vertices.length; j++){
+                edges[i][j] = one.edges[i][j];
+            }
+        }
+        
+        //remainder is built of the unique vertices in two
+        for (int i = one.vertices.length; i < vertices.length; i++){
+            int vertex = uniques.remove(0);
+            vertices[i] = two.vertices[vertex];
+            for (int j = 0; j < vertices.length; j++){
+                if (vertices[j] != null){
+                    int two_idx;
+                    if ((two_idx = indexOf(vertices[j], two.vertices)) != -1){
+                        edges[i][j] = two.edges[vertex][two_idx];
+                        edges[j][i] = two.edges[vertex][two_idx];
+                    }
+                    else {
+                        edges[i][j] = 0;
+                        edges[j][i] = 0;
+                    }
+                }
+            }
+        }
+        return new AdjacencyMatrix(vertices, edges);
+    }
 
     @Override
     public int numVertices() {
@@ -57,6 +108,15 @@ public class AdjacencyMatrix implements Graph {
             }
         }
         return -1;	// error
+    }
+    
+    private static int indexOf(String v, String[] arr){
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].compareTo(v) == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -100,7 +160,7 @@ public class AdjacencyMatrix implements Graph {
 
     //returns the min distance between two nodes (stored in the edge array)
     /*
-     * currently broken, just returns arbitrary distance of 10 if not on same adjacency matrix
+     * return -1 in case of failure
      */
     @Override
     public int getMinDist(String node1, String node2) {
@@ -108,7 +168,7 @@ public class AdjacencyMatrix implements Graph {
             return edges[indexOf(node1)][indexOf(node2)];
         }
         else {
-            return 10;
+            return -1;
         }
     }
 

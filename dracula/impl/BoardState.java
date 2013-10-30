@@ -1,5 +1,6 @@
 package dracula.impl;
 
+import dracula.impl.map.Map;
 import java.util.List;
 
 /**
@@ -39,4 +40,8 @@ public interface BoardState {
      * need a way of including sea and land based moves into same distance calc 
      */
     public int[] getHunterDistances();
+    
+    public Dracula getDracula();
+    
+    public Map getMap();
 }
