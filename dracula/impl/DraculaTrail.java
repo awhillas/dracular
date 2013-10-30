@@ -116,7 +116,7 @@ public class DraculaTrail {
 		return false;	
 	}
 
-	public boolean hasDoubleBack() {
+	public boolean hasDoubledBack() {
 		for(int i = 1; i < TRAIL_LENGTH + 1; i++) {
 			if(this.containsMove("D"+Integer.toString(i))) {
 				return true;
@@ -131,9 +131,8 @@ public class DraculaTrail {
 	
 	public ArrayList<Move> getDoubleBackMoves() {
 		ArrayList<Move> out = new ArrayList<Move>();
-		int i = 1;
-		for (Move pos : this.trail) {
-			out.add(new Move("D"+i, pos.getLocation()));
+		for (int i = 0; i < this.getLength(); i++) {
+			out.add(new Move("D"+i, trail.get(i).getLocation()));
 		}
 		return out;
 	}
