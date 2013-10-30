@@ -128,6 +128,7 @@ public class Board implements BoardState {
 		return this.map;
 	}
 	
+	@Override
 	public int getTurn() {
 		return this.turn;
 	}
