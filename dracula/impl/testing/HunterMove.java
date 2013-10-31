@@ -90,7 +90,8 @@ public class HunterMove {
     }
 
     /*
-     * 
+     * only do move search on dracula loc 50% of the time
+     * too aggressive otherwise
      */
     public String hunterSearchMove() {
         int coinToss = (int) Math.round(Math.random());
@@ -103,12 +104,13 @@ public class HunterMove {
                 String hLoc = hunter.getLocation();
                 ArrayList<String> path = m.getRoute(hLoc,
                         dLoc, new ArrayList<String>(), TravelBy.roadAndSea);
-                return path.get(1);
+                if (path.size() >= 2){
+                    return path.get(1);
+                    }
             }
-        } else {
-            Random random = new Random();
-            return options.get(random.nextInt(options.size()));
         }
+        Random random = new Random();
+        return options.get(random.nextInt(options.size()));
     }
 
     public String getEncounters(String location) {
