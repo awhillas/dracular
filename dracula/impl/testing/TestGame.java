@@ -134,6 +134,7 @@ public class TestGame {
 
             DraculaMove move = DracMoveSearch.getBestMove(board);
             String player5 = "D" + move.getPlayAsString();
+            board.parsePastPlay(player5);
 
             String player1 = HunterMover("G", "RANDOM");
             board.parsePastPlay(player1);
@@ -147,10 +148,9 @@ public class TestGame {
             board.parsePastPlay(player3);
             System.out.print(" " + player3);
 
-            String player4 = HunterMover("M", "RANDOM");
+            String player4 = HunterMover("M", "SEARCH");
             board.parsePastPlay(player4);
             System.out.print(" " + player4);
-            board.parsePastPlay(player5);
             System.out.print(" " + player5);
             System.out.println("");
             scoring(player5);
