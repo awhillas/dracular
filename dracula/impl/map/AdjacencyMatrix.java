@@ -262,6 +262,24 @@ public class AdjacencyMatrix implements Graph {
     	return Math.abs(hash);
     }
     
+    @Override
+    public String toString(){
+        String s = "";
+        s += "\t";
+        for (int i = 0; i < this.numVertices(); i++){
+            s += this.vertices[i] + "\t";
+        }
+        s += "\n";
+        for (int i = 0; i < this.numVertices(); i++){
+            s += this.vertices[i] + "\t";
+            for (int j = 0; j < this.numVertices(); j++){
+                s += this.edges[i][j] + "\t";
+            }
+            s += "\n";
+        }
+        return s;
+    }
+    
     public static void main(String[] args) {
         // Testing
         // For a visual see: http://courses.cs.vt.edu/csonline/DataStructures/Lessons/Graphs/graph.gif
