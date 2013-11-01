@@ -40,11 +40,15 @@ public class DracMoveSearch {
             List<String> avoid = new ArrayList<String>();
             avoid.addAll(trail);
             avoid.addAll(hunters);
+            avoid.add("JM");
             //first try a path back to "CD" that avoids moving into a hunter
             List<String> path = state.getMap().getRoute(dLoc, "CD", avoid, TravelBy.roadAndSea);
             if (path.size() >= 2) {
                 options.add(path.get(1));
             } else {
+                avoid = new ArrayList<String>();
+                avoid.addAll(trail);
+                avoid.add("JM");
                 //if no valid path then just try any path back to CD
                 path = state.getMap().getRoute(dLoc, "CD", trail, TravelBy.roadAndSea);
                 if (path.size() >= 2) {
@@ -53,15 +57,17 @@ public class DracMoveSearch {
             }
         }
         //check if anything has been added to options
-        if (options.size() == 0) {
+        if (options.isEmpty()) {
             Move[] dracMoves = state.getLegalMoves();
-            for (int i = 0; i < dracMoves.length; i++){
+            if (dracMoves.length == 0){
+            }
+            for (int i = 0; i < dracMoves.length; i++) {
                 options.add(dracMoves[i].getPlayAsString());
             }
         }
-        //drac can't go to JM
-        options.remove("JM");
-        
+        if (options.isEmpty()){
+            options.add("TP");
+        }
         //search for best move in options
         String bestCity = options.get(0);
         state.getDracula().setLocation(bestCity);
