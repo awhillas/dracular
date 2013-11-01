@@ -66,8 +66,13 @@ public class BoardStateScorer {
     		
     		sum += 1.0 / (1 + (d * (h/9)));
     	}
-    	// Harmonic Mean.
-    	double mean = ((double)distancesToHunters.length) / sum;
+    	//bonus for moving to CD
+        double bonus = 0.0;
+        if (state.getDracula().getLocation().contains("CD")){
+            bonus = 1.0;
+        }
+    	// Harmonic Mean + bonus
+    	double mean = ((double)distancesToHunters.length) / sum + bonus;
     	return mean;
     }
     
