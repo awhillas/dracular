@@ -33,13 +33,23 @@ public class DracMoveSearch {
           options  = state.getMap().getCities();
         }
         //if health below certain level then go to castle dracula
-        else if (state.getDracHealth() < 21){
+        else if (state.getDracHealth() < 40){
             String dLoc = state.getDracula().getLocation();
-            ArrayList<String> avoid = state.getDracula().getTrail().getLocations();
+            List<String> trail = state.getDracula().getTrail().getLocations();
+            List<String> hunters = state.getHunterLocations();
+            List<String> avoid = new ArrayList<String>();
+            avoid.addAll(trail);
+            avoid.addAll(hunters);
+            //first try a path back to "CD" that avoids moving into a hunter
             List<String> path = state.getMap().getRoute(dLoc, "CD", avoid, TravelBy.roadAndSea);
-            if (path.size() >= 2){
-                options = new ArrayList<String>();
+            if (path.size() >= 2) {
                 options.add(path.get(1));
+            } else {
+                //if no valid path then just try any path back to CD
+                path = state.getMap().getRoute(dLoc, "CD", trail, TravelBy.roadAndSea);
+                if (path.size() >= 2) {
+                    options.add(path.get(1));
+                }
             }
         }
         //check if anything has been added to options
