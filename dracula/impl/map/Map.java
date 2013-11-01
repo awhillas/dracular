@@ -51,7 +51,7 @@ public interface Map {
 	/**
      * Uses the pathfinder to get Route from one String to another using specified travel type
      */
-    ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by);
+    ArrayList<String> getRoute(String start, String finish, List<String> avoid, TravelBy by);
 
     /**
      * Gets the minimum distance between two locations.
