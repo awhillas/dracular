@@ -27,13 +27,15 @@ public class DracMoveSearch {
 
     
     public static Move getBestMove(BoardState state) {
-        List<String> options = new ArrayList<String>();
+       List<Move> options = new ArrayList<Move>();
         //check if first move
-        if (state.getTurn() == 4){
-          options  = state.getMap().getCities();
-        }
-        //if health below certain level then go to castle dracula
-        else if (state.getDracHealth() < 40){
+        if (state.getTurn() == 4) {
+            List<String> cities = state.getMap().getCities();
+            for (String s : cities){
+                options.add(new Move(s));
+            }
+        } //if health below certain level then go to castle dracula
+        else if (state.getDracHealth() < 40) {
             String dLoc = state.getDracula().getLocation();
             List<String> trail = state.getDracula().getTrail().getLocations();
             List<String> hunters = state.getHunterLocations();
@@ -44,7 +46,7 @@ public class DracMoveSearch {
             //first try a path back to "CD" that avoids moving into a hunter
             List<String> path = state.getMap().getRoute(dLoc, "CD", avoid, TravelBy.roadAndSea);
             if (path.size() >= 2) {
-                options.add(path.get(1));
+                options.add(new Move(path.get(1)));
             } else {
                 avoid = new ArrayList<String>();
                 avoid.addAll(trail);
@@ -52,7 +54,7 @@ public class DracMoveSearch {
                 //if no valid path then just try any path back to CD
                 path = state.getMap().getRoute(dLoc, "CD", trail, TravelBy.roadAndSea);
                 if (path.size() >= 2) {
-                    options.add(path.get(1));
+                    options.add(new Move(path.get(1)));
                 }
             }
         }
@@ -62,24 +64,24 @@ public class DracMoveSearch {
             if (dracMoves.length == 0){
             }
             for (int i = 0; i < dracMoves.length; i++) {
-                options.add(dracMoves[i].getPlayAsString());
+                options.add(dracMoves[i]);
             }
         }
         if (options.isEmpty()){
-            options.add("TP");
+            options.add(new Move("TP"));
         }
         //search for best move in options
-        String bestCity = options.get(0);
-        state.getDracula().setLocation(bestCity);
+        Move best = options.get(0);
+        state.getDracula().setLocation(best.getLocation());
         double bestScore = BoardStateScorer.getScore(state);
-        for (String city : options){
-            state.getDracula().setLocation(city);
-            if (BoardStateScorer.getScore(state) > bestScore){
+        for (Move m : options) {
+            state.getDracula().setLocation(m.getLocation());
+            if (BoardStateScorer.getScore(state) > bestScore) {
                 bestScore = BoardStateScorer.getScore(state);
-                bestCity = city;
+                best = m;
             }
         }
-        return new Move(bestCity);
+        return best;
         
         
         /*
