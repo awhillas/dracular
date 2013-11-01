@@ -9,7 +9,7 @@ import dracula.impl.map.*;
 public class PathFinder {
     
     //returns path between two nodes, or returns an empty arrayList if no path exist
-    public static ArrayList<String> getPath(String start, String finish, ArrayList<String> avoid, Graph graph) {
+    public static ArrayList<String> getPath(String start, String finish, List<String> avoid, Graph graph) {
         //initialise the path as empty
         ArrayList<String> path = new ArrayList<String>();
         SearchPriorityQueue queue = new SearchPriorityQueue();
