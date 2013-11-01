@@ -177,9 +177,11 @@ public class Board implements BoardState {
 		if (dracula.canDoubleBack()) {
 			options.addAll(dracula.getTrail().getDoubleBackMoves());
 		}
-		if (dracula.canTeleport()) {
+		/*if (dracula.canTeleport()) {
 			options.add(new Move("TP", GameMap.CASTLE));
 		}
+                * moved teleport to dracMoveSearch
+                */
 		return options.toArray(new Move[options.size()]);
 	}
 	
