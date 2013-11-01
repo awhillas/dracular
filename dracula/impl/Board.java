@@ -185,20 +185,32 @@ public class Board implements BoardState {
 	
 	@Override
 	public int[] getHunterDistances() {
-		
-        String dLoc = this.dracula.getLocation();
-        String[] pLoc = new String[4];
-        pLoc[0] = players.get("G").getLocation();
-        pLoc[1] = players.get("S").getLocation();
-        pLoc[2] = players.get("H").getLocation();
-        pLoc[3] = players.get("M").getLocation();
-        
+	        String dLoc = this.dracula.getLocation();
+	        String[] pLoc = new String[4];
+	        pLoc[0] = players.get("G").getLocation();
+	        pLoc[1] = players.get("S").getLocation();
+	        pLoc[2] = players.get("H").getLocation();
+	        pLoc[3] = players.get("M").getLocation();
+	        
 		int[] distances = new int[4];
 		for (int i = 0; i < pLoc.length; i ++){
-            distances [i] = map.getMinDistanceBetween(dLoc, pLoc[i]);
-        }
+	    		distances [i] = map.getMinDistanceBetween(dLoc, pLoc[i]);
+		}
 		return distances;
 	}
+	
+	/*
+         * return list of current hunter locations
+         */
+        @Override
+        public List<String> getHunterLocations(){
+            List<String> hLocs = new ArrayList<String>();
+            hLocs.add(players.get("G").getLocation());
+            hLocs.add(players.get("S").getLocation());
+            hLocs.add(players.get("H").getLocation());
+            hLocs.add(players.get("M").getLocation());
+            return hLocs;
+        }
 	
 	public HashMap<String, Player> getHunters() {
 		return this.players;
