@@ -188,7 +188,7 @@ public class GameMap implements Map {
      * uses pathFinder to get the route between two cities (assuming they can be reached from one another)
      */
     @Override
-    public ArrayList<String> getRoute(String start, String finish, ArrayList<String> avoid, TravelBy by) {
+    public ArrayList<String> getRoute(String start, String finish, List<String> avoid, TravelBy by) {
         switch (by) {
             case road:
                 return PathFinder.getPath(start, finish, avoid, roads);
