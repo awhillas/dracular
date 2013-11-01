@@ -46,4 +46,7 @@ public interface BoardState {
     public Map getMap();
     
     public int getTurn();
+    
+    public List<String> getHunterLocations();
+            
 }
