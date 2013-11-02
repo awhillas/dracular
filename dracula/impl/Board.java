@@ -174,8 +174,13 @@ public class Board implements BoardState {
 		if (dracula.canHide()) {
 			options.add(new Move("HI", dracula.getLocation()));
 		}
+		//now checks if doubleBacks are adjacent to current position
 		if (dracula.canDoubleBack()) {
-			options.addAll(dracula.getTrail().getDoubleBackMoves());
+                        List<Move> doubleBacks = dracula.getTrail().getDoubleBackMoves();
+                        for (Move m: doubleBacks){
+                            adjacent.contains(m.getLocation());
+                            options.add(m);
+                        }
 		}
 		/*if (dracula.canTeleport()) {
 			options.add(new Move("TP", GameMap.CASTLE));
