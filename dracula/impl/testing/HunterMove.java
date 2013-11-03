@@ -18,7 +18,6 @@ public class HunterMove {
     private Board board;
     private Player hunter;
     private List<String> options;
-    private List<String> nonOptions;
     private String moveType;
     private String encounters;
 
@@ -29,47 +28,12 @@ public class HunterMove {
 
     }
 
-    public List<String> legalByRail() {
-        int sum = hunter.getNumber() + board.getRound();
-        List<String> optionTrainLocs = new ArrayList<String>();
-        if (sum % 4 == 1) {
-            //level 1
-            optionTrainLocs = board.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
-        } else if (sum % 4 == 2) {
-            //level 1
-            optionTrainLocs = board.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
-            //level 2
-            for (String loc : optionTrainLocs) {
-                optionTrainLocs.addAll(board.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
-            }
-        } else if (sum % 4 == 3) {
-            //level 1
-            optionTrainLocs = board.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.rail));
-            //level 2
-            for (String loc : optionTrainLocs) {
-                optionTrainLocs.addAll(board.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
-            }
-            //level 3
-            for (String loc : optionTrainLocs) {
-                optionTrainLocs.addAll(board.getMap().getAdjacentFor(loc, EnumSet.of(TravelBy.rail)));
-            }
-        }
-        return optionTrainLocs;
-    }
-
     public String hunterMove() {
-
         List<String> optionLocs = board.getMap().getAdjacentFor(hunter.getLocation(), EnumSet.of(TravelBy.road, TravelBy.sea));
-        //optionLocs.addAll(legalByRail());
-
         options = new ArrayList<String>();
         for (String loc : optionLocs) {
             options.add(loc);
         }
-        nonOptions = new ArrayList<String>();
-
-        //Dracula Castle isn't allowed
-        nonOptions.add("CD");
         String newLocation = "";
 
         /*

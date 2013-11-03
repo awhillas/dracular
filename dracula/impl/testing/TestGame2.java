@@ -16,7 +16,7 @@ public class TestGame2 {
 	
 	
 	private static void testDraculaStartingPosition() {
-		String pastPlays = "GCD.... SVI.... HPA.... MMI....";
+		String pastPlays = "GLO.... SVI.... HPA.... MMI....";
 		String[] messages = new String[4];
 		for (int i = 0; i < messages.length; i++) {
 			messages[i] = "Blah " + i;
