@@ -110,6 +110,7 @@ public class Dracula implements Player {
 			move = new Move(action, location);
 		} else if(action.matches("D[1-5]")) {
 			int back = Integer.parseInt(action.substring(1));
+			back--;
 			move = new Move(action, trail.getMoveAt(back).getLocation());
 		} else if(action.equals("TP")) {
 			move = new Move(action, GameMap.CASTLE);
