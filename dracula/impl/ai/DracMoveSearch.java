@@ -35,7 +35,7 @@ public class DracMoveSearch {
                 options.add(new Move(s));
             }
         } //if health below certain level then go to castle dracula
-        else if (state.getDracHealth() < 40) {
+        else if (state.getDracHealth() < 60) {
             String dLoc = state.getDracula().getLocation();
             List<String> trail = state.getDracula().getTrail().getLocations();
             List<String> hunters = state.getHunterLocations();
